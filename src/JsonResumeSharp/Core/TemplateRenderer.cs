@@ -1,104 +1,82 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
-using DinkToPdf;
-using DinkToPdf.Contracts;
-using Microsoft.Extensions.DependencyInjection;
-using RazorLight;
-using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace JsonResumeSharp.Core
 {
-    public class TemplateRenderer
-    {  private readonly IRazorLightEngine _razorEngine;
-    private readonly IConverter _pdfConverter;
-    private readonly string _templatesRoot;
-
-    public TemplateRenderer(string? customTemplatesPath = null)
+    public class HtmlTemplateProcessor
     {
-        // Determine templates directory
-        _templatesRoot = customTemplatesPath ?? 
-                        Path.Combine(AppContext.BaseDirectory, "Templates");
+        private readonly string _templatesRoot;
 
-        // Create templates directory if it doesn't exist
-        if (!Directory.Exists(_templatesRoot))
+        public HtmlTemplateProcessor(string? customTemplatesPath = null)
         {
-            Directory.CreateDirectory(_templatesRoot);
+            _templatesRoot = customTemplatesPath ?? 
+                           Path.Combine(AppContext.BaseDirectory, "Templates");
+
+            if (!Directory.Exists(_templatesRoot))
+            {
+                Directory.CreateDirectory(_templatesRoot);
+            }
         }
 
-        // Initialize RazorLight
-        _razorEngine = new RazorLightEngineBuilder()
-            .UseFileSystemProject(_templatesRoot)
-            .UseMemoryCachingProvider()
-            .Build();
-
-        // Initialize PDF converter
-        var services = new ServiceCollection()
-            .AddSingleton<IConverter>(new SynchronizedConverter(new PdfTools()))
-            .BuildServiceProvider();
-
-        _pdfConverter = services.GetRequiredService<IConverter>();
-    }
-
-    public async Task<string> RenderHtmlAsync(JsonNode data, string templateName = "modern")
-    {
-        try
+        public async Task<string> ProcessTemplateAsync(JsonNode data, string templateName = "modern")
         {
-            // If templateName is a full path, use it directly
-            string templatePath = Path.IsPathRooted(templateName) 
-                ? templateName 
-                : Path.Combine(_templatesRoot, templateName, "template.cshtml");
-
+            var templatePath = Path.Combine(_templatesRoot, templateName, "template.html");
             if (!File.Exists(templatePath))
             {
                 throw new FileNotFoundException($"Template not found at: {templatePath}");
             }
 
-            var templateContent = await File.ReadAllTextAsync(templatePath);
-            return await _razorEngine.CompileRenderStringAsync(
-                Guid.NewGuid().ToString(),
-                templateContent,
-                new { CV = data });
+            var template = await File.ReadAllTextAsync(templatePath);
+            return ProcessTemplate(template, data);
         }
-        catch (Exception ex)
-        {
-            throw new InvalidOperationException($"Failed to render HTML template: {ex.Message}", ex);
-        }
-    }
 
-        public async Task<byte[]> RenderPdfAsync(JsonNode data, string templateName = "modern")
+        public string ProcessTemplate(string template, JsonNode data)
+        {
+            // Process each: data-bind="path.to.property"
+            var result = Regex.Replace(template, 
+                @"data-bind=""([^""]*)""", 
+                match => ProcessBinding(match, data) ?? match.Value);
+
+            // Process each: {{path.to.property}}
+            result = Regex.Replace(result, 
+                @"\{\{\s*([^}]+?)\s*\}\}", 
+                match => GetValueFromPath(data, match.Groups[1].Value)?.ToString() ?? string.Empty);
+
+            return result;
+        }
+
+        private string? ProcessBinding(Match match, JsonNode data)
+        {
+            var path = match.Groups[1].Value.Trim();
+            var value = GetValueFromPath(data, path);
+            return match.Value.Replace(match.Groups[0].Value, value?.ToString() ?? string.Empty);
+        }
+
+        private static JsonNode? GetValueFromPath(JsonNode node, string path)
         {
             try
             {
-                // First render HTML
-                var html = await RenderHtmlAsync(data, templateName);
-
-                // Then convert to PDF
-                var doc = new HtmlToPdfDocument()
+                var current = node;
+                foreach (var part in path.Split('.'))
                 {
-                    GlobalSettings = {
-                        ColorMode = ColorMode.Color,
-                        Orientation = Orientation.Portrait,
-                        PaperSize = PaperKind.A4,
-                    },
-                    Objects = {
-                        new ObjectSettings() {
-                            PagesCount = true,
-                            HtmlContent = html,
-                            WebSettings = { DefaultEncoding = "utf-8" },
-                            HeaderSettings = { FontSize = 9, Right = "Page [page] of [toPage]", Line = true },
-                        }
+                    if (current == null) return null;
+                    if (current is JsonObject obj && obj.TryGetPropertyValue(part, out var value))
+                    {
+                        current = value;
                     }
-                };
-
-                return _pdfConverter.Convert(doc);
+                    else
+                    {
+                        return null;
+                    }
+                }
+                return current;
             }
-            catch (Exception ex)
+            catch
             {
-                throw new InvalidOperationException("Failed to generate PDF", ex);
+                return null;
             }
         }
     }
