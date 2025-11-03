@@ -1,0 +1,35 @@
+{
+  "name": "John Doe",
+  "title": "Senior Software Engineer",
+  "contact": {
+    "email": "john.doe@example.com",
+    "phone": "+1 (555) 123-4567",
+    "location": "San Francisco, CA"
+  },
+  "summary": "Experienced software engineer with 5+ years of experience in full-stack development and cloud architecture.",
+  "experience": [
+    {
+      "title": "Senior Software Engineer",
+      "company": "Tech Corp Inc.",
+      "startDate": "2020-01",
+      "endDate": "Present",
+      "description": "Leading a team of developers to build scalable web applications.",
+      "tags": ["C#", "JavaScript", "Azure"]
+    },
+    {
+      "title": "Software Developer",
+      "company": "Web Solutions Ltd.",
+      "startDate": "2018-01",
+      "endDate": "2019-12",
+      "description": "Developed and maintained web applications using modern JavaScript frameworks.",
+      "tags": ["JavaScript", "React", "Node.js"]
+    }
+  ],
+  "education": [
+    {
+      "degree": "MSc in Computer Science",
+      "institution": "Tech University",
+      "year": "2018"
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title data-bind="title">Resume</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .contact { margin: 10px 0; }
+        .section { margin-bottom: 25px; }
+        .section-title { border-bottom: 2px solid #333; padding-bottom: 5px; }
+        .experience, .education { margin-bottom: 20px; }
+        .job-title { font-weight: bold; }
+        .company { font-style: italic; }
+        .date { color: #666; }
+        .tags { margin-top: 5px; }
+        .tag { 
+            display: inline-block; 
+            background: #e0e0e0; 
+            padding: 2px 8px; 
+            border-radius: 4px; 
+            margin-right: 5px; 
+            font-size: 0.9em; 
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 data-bind="name">Your Name</h1>
+        <div class="title" data-bind="title">Your Title</div>
+        <div class="contact">
+            <span data-bind="contact.email"></span> | 
+            <span data-bind="contact.phone"></span> | 
+            <span data-bind="contact.location"></span>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">Summary</h2>
+        <p data-bind="summary"></p>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">Experience</h2>
+        <div data-foreach="experience" class="experience">
+            <div class="job-title" data-bind="title"></div>
+            <div class="company" data-bind="company"></div>
+            <div class="date">
+                <span data-bind="startDate"></span> - <span data-bind="endDate"></span>
+            </div>
+            <p data-bind="description"></p>
+            <div class="tags" data-foreach="tags">
+                <span class="tag" data-bind="$value"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">Education</h2>
+        <div data-foreach="education" class="education">
+            <div class="degree" data-bind="degree"></div>
+            <div class="institution" data-bind="institution"></div>
+            <div class="date" data-bind="year"></div>
+        </div>
+    </div>
+</body>
+</html>
