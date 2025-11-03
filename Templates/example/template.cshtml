@@ -1,0 +1,125 @@
+@using System.Dynamic
+@using System.Text.Json.Nodes
+@using JsonResumeSharp.Core
+
+@{
+    var cv = Model.CV as JsonNode;
+    string GetValue(JsonNode node, params string[] paths)
+    {
+        foreach (var path in paths)
+        {
+            var value = DynamicJsonHelper.ResolvePath(node, path);
+            if (value != null) return value.ToString();
+        }
+        return string.Empty;
+    }
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@GetValue(cv, "name") - CV</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .name { font-size: 2em; font-weight: bold; margin: 0; }
+        .title { color: #666; font-size: 1.2em; margin: 5px 0; }
+        .contact { margin: 10px 0; color: #444; }
+        .section { margin: 25px 0; }
+        .section-title { border-bottom: 2px solid #eee; padding-bottom: 5px; font-size: 1.3em; }
+        .experience, .education { margin: 15px 0; }
+        .job-title { font-weight: bold; }
+        .company { font-style: italic; }
+        .period { color: #666; font-size: 0.9em; }
+        .tags { margin-top: 5px; }
+        .tag {
+            display: inline-block;
+            background: #f0f0f0;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8em;
+            margin-right: 5px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="name">@GetValue(cv, "name")</h1>
+        <div class="title">@GetValue(cv, "title")</div>
+        <div class="contact">
+            @GetValue(cv, "contact.email") | 
+            @GetValue(cv, "contact.phone") | 
+            @GetValue(cv, "contact.location")
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">Summary</h2>
+        <p>@GetValue(cv, "summary")</p>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">Skills</h2>
+        @if (cv?["skills"] is JsonArray skills)
+        {
+            foreach (var skill in skills)
+            {
+                <div class="skill">
+                    <span class="skill-name">@GetValue(skill, "name")</span> - 
+                    <span class="skill-level">@GetValue(skill, "level")</span>
+                    @if (skill?["tags"] is JsonArray tags)
+                    {
+                        <div class="tags">
+                            @foreach (var tag in tags)
+                            {
+                                <span class="tag">@tag</span>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        }
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">Experience</h2>
+        @if (cv?["experience"] is JsonArray experiences)
+        {
+            foreach (var exp in experiences)
+            {
+                <div class="experience">
+                    <div class="job-title">@GetValue(exp, "title")</div>
+                    <div class="company">@GetValue(exp, "company")</div>
+                    <div class="period">@GetValue(exp, "period")</div>
+                    <p>@GetValue(exp, "description")</p>
+                    @if (exp?["tags"] is JsonArray tags)
+                    {
+                        <div class="tags">
+                            @foreach (var tag in tags)
+                            {
+                                <span class="tag">@tag</span>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        }
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">Education</h2>
+        @if (cv?["education"] is JsonArray education)
+        {
+            foreach (var edu in education)
+            {
+                <div class="education">
+                    <div class="degree">@GetValue(edu, "degree")</div>
+                    <div class="institution">@GetValue(edu, "institution")</div>
+                    <div class="year">@GetValue(edu, "year")</div>
+                </div>
+            }
+        }
+    </div>
+</body>
+</html>
