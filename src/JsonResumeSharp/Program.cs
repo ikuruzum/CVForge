@@ -4,6 +4,9 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
+using DinkToPdf;
+using DinkToPdf.Contracts;
+using Microsoft.Extensions.DependencyInjection;
 using JsonResumeSharp.Core;
 
 namespace JsonResumeSharp
@@ -16,7 +19,8 @@ namespace JsonResumeSharp
             
             var inputOption = new Option<FileInfo>(
                 "--input",
-                "Path to the JSON resume file");
+                "Path to the JSON resume file")
+                .ExistingOnly();
                 
             var outputOption = new Option<FileInfo?>(
                 "--output",
@@ -29,27 +33,15 @@ namespace JsonResumeSharp
                 
             var templateOption = new Option<string>(
                 "--template",
-                () => "modern",
-                "Template to use for generation");
-                
-            var listTemplatesOption = new Option<bool>(
-                "--templates",
-                "List available templates and exit");
+                "Path to the template directory");
 
             rootCommand.AddOption(inputOption);
             rootCommand.AddOption(outputOption);
             rootCommand.AddOption(formatOption);
             rootCommand.AddOption(templateOption);
-            rootCommand.AddOption(listTemplatesOption);
             
-            rootCommand.SetHandler(async (input, output, format, template, listTemplates) =>
+            rootCommand.SetHandler(async (input, output, format, template) =>
             {
-                if (listTemplates)
-                {
-                    await ListTemplatesAsync();
-                    return;
-                }
-
                 if (input == null)
                 {
                     Console.Error.WriteLine("Error: Input file is required. Use --help for usage information.");
@@ -63,7 +55,6 @@ namespace JsonResumeSharp
                 }
 
                 var jsonData = await File.ReadAllTextAsync(input.FullName);
-                var templateRenderer = new TemplateRenderer();
                 
                 // Parse JSON dynamically
                 var jsonNode = JsonNode.Parse(jsonData) ?? throw new InvalidOperationException("Invalid JSON data");
@@ -72,12 +63,36 @@ namespace JsonResumeSharp
                 
                 if (string.Equals(format, "html", StringComparison.OrdinalIgnoreCase))
                 {
-                    var html = await templateRenderer.RenderHtmlAsync(jsonNode, template);
+                    var templateProcessor = new HtmlTemplateProcessor(template);
+                    var html = await templateProcessor.ProcessTemplateAsync(jsonNode);
                     await File.WriteAllTextAsync(outputPath, html);
                 }
                 else if (string.Equals(format, "pdf", StringComparison.OrdinalIgnoreCase))
                 {
-                    var pdfBytes = await templateRenderer.RenderPdfAsync(jsonNode, template);
+                    // For PDF, first generate HTML then convert to PDF
+                    var templateProcessor = new HtmlTemplateProcessor(template);
+                    var html = await templateProcessor.ProcessTemplateAsync(jsonNode);
+                    
+                    var converter = new SynchronizedConverter(new PdfTools());
+                    var doc = new HtmlToPdfDocument()
+                    {
+                        GlobalSettings = {
+                            ColorMode = ColorMode.Color,
+                            Orientation = Orientation.Portrait,
+                            PaperSize = PaperKind.A4,
+                            Out = outputPath
+                        },
+                        Objects = {
+                            new ObjectSettings() {
+                                PagesCount = true,
+                                HtmlContent = html,
+                                WebSettings = { DefaultEncoding = "utf-8" },
+                                HeaderSettings = { FontSize = 9, Right = "Page [page] of [toPage]", Line = true },
+                            }
+                        }
+                    };
+                    
+                    var pdfBytes = converter.Convert(doc);
                     await File.WriteAllBytesAsync(outputPath, pdfBytes);
                 }
                 else
@@ -88,17 +103,10 @@ namespace JsonResumeSharp
 
                 Console.WriteLine($"Resume successfully generated: {outputPath}");
             },
-            inputOption, outputOption, formatOption, templateOption, listTemplatesOption);
+            inputOption, outputOption, formatOption, templateOption);
             
             return await rootCommand.InvokeAsync(args);
         }
         
-        private static Task ListTemplatesAsync()
-        {
-            Console.WriteLine("Available templates:");
-            Console.WriteLine("- modern (default)");
-            Console.WriteLine("- example");
-            return Task.CompletedTask;
-        }
     }
 }
