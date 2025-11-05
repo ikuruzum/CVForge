@@ -30,85 +30,9 @@ public class CVForgeValue
         }
 
         // If the YAML is a dictionary
-       else if (yamlObject is IDictionary<object, object> yamlDict)
+        else if (yamlObject is IDictionary<object, object> yamlDict)
         {
-            // Handle CVForgeValue properties
-            if (yamlDict.TryGetValue("value", out var valueObj))
-            {
-                Value = valueObj?.ToString();
-            }
-
-            if (yamlDict.TryGetValue("tags", out var tagsObj) && tagsObj is IList<object> tagsList)
-            {
-                Tags = tagsList.OfType<string>().ToList();
-            }
-
-            if (yamlDict.TryGetValue("url", out var urlObj))
-            {
-                URL = urlObj?.ToString();
-            }
-
-            if (yamlDict.TryGetValue("explicit", out var explicitObj))
-            {
-                Explicit = explicitObj as bool? ?? false;
-            }
-
-
-            // Process all key-value pairs in the dictionary
-            foreach (var kvp in yamlDict)
-            {
-                if (!(kvp.Key is string key)) continue;
-
-                // Skip CVForgeValue special properties to avoid duplication
-                if (key == "value" || key == "tags" || key == "url" || key == "explicit")
-                    continue;
-
-                if (kvp.Value is IDictionary<object, object> nestedDict)
-                {
-                    // Recursively create CVForgeValue for nested dictionaries
-                    var nestedYaml = serializer.Serialize(nestedDict);
-                    data[key] = new CVForgeValue(nestedYaml);
-                }
-                else if (kvp.Value is IList<object> list)
-                {
-                    // Convert list to List<CVForgeValue>
-                    var cvList = new List<CVForgeValue>();
-                    foreach (var item in list)
-                    {
-                        if (item is IDictionary<object, object> itemDict)
-                        {
-                            var itemValue = new CVForgeValue();
-                            foreach (var itemKvp in itemDict)
-                            {
-                                if (itemKvp.Key is string itemKey)
-                                {
-                                    itemValue[itemKey] = new CVForgeValue { Value = itemKvp.Value };
-                                }
-                            }
-                            cvList.Add(itemValue);
-                        }
-                        else if (item is IList<object> nestedList)
-                        {
-                            var nestedCvList = new List<CVForgeValue>();
-                            foreach (var nestedItem in nestedList)
-                            {
-                                nestedCvList.Add(new CVForgeValue { Value = nestedItem });
-                            }
-                            cvList.Add(new CVForgeValue { Value = nestedCvList });
-                        }
-                        else
-                        {
-                            cvList.Add(new CVForgeValue { Value = item });
-                        }
-                    }
-                    data[key] = new CVForgeValue { Value = cvList };
-                }
-                else
-                {
-                    // Simple value
-                    data[key] = new CVForgeValue { Value = kvp.Value };
-                }
-            }
+            FromDictionary(yamlDict);
         }
 
         else
@@ -124,13 +48,13 @@ public class CVForgeValue
 
     public dynamic? Value { get; set; }
 
-    public List<string> Tags  = new List<string>();
+    public List<string> Tags = new List<string>();
 
 
     public string? URL { get; set; }
 
     private Dictionary<string, CVForgeValue> data { get; set; } = new Dictionary<string, CVForgeValue>();
-   
+
 
     private List<CVForgeValue>? ListValue
     {
@@ -241,7 +165,7 @@ public class CVForgeValue
                     }
                 }
             }
-            
+
             if (newList.Count > 0)
             {
                 Value = newList;
@@ -260,8 +184,8 @@ public class CVForgeValue
     /// </summary>
     public bool IsEmpty()
     {
-        return Value == null && 
-               data.Count == 0 && 
+        return Value == null &&
+               data.Count == 0 &&
                (ListValue == null || ListValue.Count == 0) &&
                string.IsNullOrEmpty(URL) &&
                !Explicit &&
@@ -295,7 +219,7 @@ public class CVForgeValue
         }
 
         // If we have excluded tags and any tag matches, exclude this item
-        if (excludedTags.Count > 0 && Tags != null && Tags.Any(tag => excludedTags.Contains(tag)))
+        if (excludedTags.Count > 0 && Tags != null && Tags.Any(excludedTags.Contains))
             return new CVForgeValue();
 
         // Process the data dictionary
@@ -318,14 +242,14 @@ public class CVForgeValue
             foreach (var item in listValue)
             {
                 if (item == null) continue;
-                
+
                 var filteredItem = item.FilterTags(tags);
                 if (filteredItem.data.Count > 0 || filteredItem.Value != null)
                 {
                     filteredList.Add(filteredItem);
                 }
             }
-            
+
             if (filteredList.Count > 0)
             {
                 result.Value = filteredList;
@@ -336,7 +260,7 @@ public class CVForgeValue
         if (data.Count == 0 && Value != null)
         {
             // If we have included tags, this item must have at least one matching tag
-            if (includedTags.Count > 0 && !Tags!.Any(tag => includedTags.Contains(tag) ) && Tags!.Count != 0)
+            if (includedTags.Count > 0 && !Tags!.Any(tag => includedTags.Contains(tag)) && Tags!.Count != 0)
                 return new CVForgeValue();
 
             // If we have excluded tags and this item has any of them, exclude it
@@ -353,5 +277,119 @@ public class CVForgeValue
         }
 
         return result.PruneEmptyValues();
+    }
+    /// <summary>
+    /// Converts the CVForgeValue to a dictionary representation
+    /// </summary>
+    public Dictionary<string, object> ToDictionary()
+    {
+        var dict = new Dictionary<string, object>();
+
+        // Add special properties if they have values
+        if (Value != null)
+        {
+            dict["value"] = Value;
+        }
+
+        if (Tags != null && Tags.Count > 0)
+        {
+            dict["tags"] = Tags;
+        }
+
+        if (!string.IsNullOrEmpty(URL))
+        {
+            dict["url"] = URL;
+        }
+
+        if (Explicit)
+        {
+            dict["explicit"] = true;
+        }
+
+        // Add all data properties
+        foreach (var kvp in data)
+        {
+            if (kvp.Value == null) continue;
+
+            if (kvp.Value.Value is List<CVForgeValue> listValue)
+            {
+                dict[kvp.Key] = listValue.Select(v => v.ToDictionary()).ToList();
+            }
+            else
+            {
+                dict[kvp.Key] = kvp.Value.ToDictionary();
+            }
+        }
+
+        return dict;
+    }
+
+    /// <summary>
+    /// Populates the CVForgeValue from a dictionary
+    /// </summary>
+    public void FromDictionary(IDictionary<object, object> dict)
+    {
+        // Handle CVForgeValue properties
+        if (dict.TryGetValue("value", out var valueObj))
+        {
+            Value = valueObj?.ToString();
+        }
+        if (dict.TryGetValue("tags", out var tagsObj))
+        {
+
+            if (tagsObj is IList<object> tagsList)
+            {
+                Tags = tagsList.OfType<string>().ToList();
+            }else if(tagsObj is string tagsStr ){
+                Tags = tagsStr.Split(",").Select((e)=>e.Trim()).ToList();
+            }
+        }
+
+        if (dict.TryGetValue("url", out var urlObj))
+        {
+            URL = urlObj?.ToString();
+        }
+
+        if (dict.TryGetValue("explicit", out var explicitObj))
+        {
+            Explicit = explicitObj as bool? ?? false;
+        }
+
+        // Process all key-value pairs in the dictionary
+        foreach (var kvp in dict)
+        {
+            if (!(kvp.Key is string key)) continue;
+
+            // Skip CVForgeValue special properties to avoid duplication
+            if (key == "value" || key == "tags" || key == "url" || key == "explicit")
+                continue;
+
+            if (kvp.Value is IDictionary<object, object> nestedDict)
+            {
+                var nestedValue = new CVForgeValue();
+                nestedValue.FromDictionary(nestedDict);
+                data[key] = nestedValue;
+            }
+            else if (kvp.Value is IList<object> list)
+            {
+                var cvList = list.Select(item =>
+                {
+                    if (item is IDictionary<object, object> itemDict)
+                    {
+                        var itemValue = new CVForgeValue();
+                        itemValue.FromDictionary(itemDict);
+                        return itemValue;
+                    }
+                    return new CVForgeValue { Value = item };
+                }).ToList();
+
+                data[key] = new CVForgeValue { Value = cvList };
+            }
+            else
+            {
+                // Simple value
+                data[key] = new CVForgeValue { Value = kvp.Value };
+            }
+        }
     }
 }
