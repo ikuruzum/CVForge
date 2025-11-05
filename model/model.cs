@@ -200,8 +200,12 @@ public class CVForgeValue
             .Select(t => t.Substring(1))
             .ToList();
 
-        var result = new CVForgeValue();
-
+        var result = new CVForgeValue
+        {
+            Tags = new List<string>(this.Tags),  // Make a copy of the tags
+            URL = this.URL,                      // Copy other properties as needed
+            Explicit = this.Explicit
+        };
         // If this is an explicit item, it should only be included if explicitly requested
         if (Explicit)
         {
@@ -231,7 +235,20 @@ public class CVForgeValue
             var filteredNested = item.Value.FilterTags(tags);
             if (filteredNested.data.Count > 0 || filteredNested.Value != null)
             {
-                result[item.Key] = filteredNested;
+                // Create a new CVForgeValue with the filtered nested object's properties
+                var resultNested = new CVForgeValue
+                {
+                    Value = filteredNested.Value,
+                    Tags = new List<string>(filteredNested.Tags),  
+                    URL = filteredNested.URL,                      
+                    Explicit = filteredNested.Explicit
+                };
+                // Copy the data dictionary
+                foreach (var kvp in filteredNested.data)
+                {
+                    resultNested.data[kvp.Key] = kvp.Value;
+                }
+                result[item.Key] = resultNested;
             }
         }
 
@@ -246,7 +263,20 @@ public class CVForgeValue
                 var filteredItem = item.FilterTags(tags);
                 if (filteredItem.data.Count > 0 || filteredItem.Value != null)
                 {
-                    filteredList.Add(filteredItem);
+                    // Create a new CVForgeValue with the filtered item's properties
+                    var resultItem = new CVForgeValue
+                    {
+                        Value = filteredItem.Value,
+                        Tags = new List<string>(filteredItem.Tags),  // Copy tags
+                        URL = filteredItem.URL,                      // Copy other properties
+                        Explicit = filteredItem.Explicit
+                    };
+                    // Copy the data dictionary
+                    foreach (var kvp in filteredItem.data)
+                    {
+                        resultItem.data[kvp.Key] = kvp.Value;
+                    }
+                    filteredList.Add(resultItem);
                 }
             }
 
@@ -340,8 +370,10 @@ public class CVForgeValue
             if (tagsObj is IList<object> tagsList)
             {
                 Tags = tagsList.OfType<string>().ToList();
-            }else if(tagsObj is string tagsStr ){
-                Tags = tagsStr.Split(",").Select((e)=>e.Trim()).ToList();
+            }
+            else if (tagsObj is string tagsStr)
+            {
+                Tags = tagsStr.Split(",").Select((e) => e.Trim()).ToList();
             }
         }
 
