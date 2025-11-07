@@ -58,17 +58,16 @@
 
 <div class="container">
   <header class="header" role="banner">
-    <div class="name" value-of="fullName">Your Name</div>
-    <div class="title" value-of="title">Your Title</div>
+    <div class="name" value-of="name"></div>
+    <div class="title" value-of="title"></div>
     <div class="contact" aria-label="İletişim bilgileri">
-      <span value-of="email"><a href="mailto:example@mail.com">example@mail.com</a></span>
-      <span value-of="phone">+90 5xx xxx xx xx</span>
-      <span value-of="location">Şehir</span>
-      <span value-of="links"><!-- opsiyonel: LinkedIn | GitHub vb. --></span>
+      <span value-of="email"><a href="mailto:example@mail.com"></a></span>
+      <span value-of="phone"></span>
+      <span value-of="location"></span>
+      <div repeat-for="links"><span value-of="links.title"></span></div>
     </div>
 
     <p class="summary" value-of="summary">
-      Kısa özetiniz buraya gelecek. (Örnek: I am a software developer with over 2 years of experience in the industry. On mobile, I focus mainly on Flutter development and support the Back-End space...) 
     </p>
   </header>
 
@@ -82,20 +81,20 @@
           <article class="experience-item" aria-label="İş deneyimi">
             <div class="job-row">
               <div>
-                <div class="position" value-of="experience.position">Software Developer</div>
-                <div class="employer" value-of="experience.company">Evosoft</div>
+                <div class="position" value-of="experience.position"></div>
+                <div class="employer" value-of="experience.company"></div>
               </div>
               <div class="dates" aria-hidden="false">
-                <div value-of="experience.startDate">06.2022</div>
+                <div value-of="experience.startDate"></div>
                 <div> - </div>
-                <div value-of="experience.endDate">Present</div>
+                <div value-of="experience.endDate"></div>
               </div>
             </div>
             <div class="description" value-of="experience.description">
-              Pozisyon açıklaması veya kısa özet buraya gelecek.
+
             </div>
-            <ul class="responsibilities" value-of="experience.responsibilities">
-              <li>Made Evolubult Mobil incl. its API - Which is a mobile part of cloud based CRM software Evolubult.</li>
+            <ul class="responsibilities" repeat-for="experience.responsibilities">
+              <li value-of="experience.responsibilities"></li>
             </ul>
           </article>
         </div>
@@ -106,9 +105,9 @@
         </div>
         <div  class="education-list">
           <div repeat-for="education" class="education-item">
-            <div class="degree" value-of="education.degree">Associate Degree, Mechanical Drawing and Construction</div>
-            <div class="institution" value-of="education.institution">Eskişehir Osmangazi Üniversitesi</div>
-            <div class="dates" value-of="education.yearRange">2020 - 2023</div>
+            <div class="degree" value-of="education.degree"></div>
+            <div class="institution" value-of="education.institution"></div>
+            <div class="dates" value-of="education.yearRange"></div>
           </div>
         </div>
       </section>
@@ -125,28 +124,28 @@
           <div class="skill-block">
             <div class="small-muted">Mobile / Front-End</div>
             <div class="skill-list">
-              <div repeat-for="skills.mobile" class="tag" style="display:inline-block;margin-bottom:6px;">Flutter</div>
+              <div repeat-for="skills.mobile"><div value-of="skills.mobile" class="tag" style="display:inline-block;margin-bottom:6px;"></div></div>
             </div>
           </div>
 
           <div class="skill-block">
             <div class="small-muted">Back-End</div>
             <div  class="skill-list">
-              <div repeat-for="skills.backend" class="tag" style="display:inline-block;margin-bottom:6px;">Golang</div>
+              <div repeat-for="skills.backend"><div value-of="skills.backend" class="tag" style="display:inline-block;margin-bottom:6px;"></div></div>
             </div>
           </div>
 
           <div class="skill-block">
             <div class="small-muted">Database</div>
             <div  class="skill-list">
-              <div repeat-for="skills.databases" class="tag" style="display:inline-block;margin-bottom:6px;">MySQL</div>
+              <div repeat-for="skills.databases"><div value-of="skills.databases" class="tag" style="display:inline-block;margin-bottom:6px;"></div></div>
             </div>
           </div>
 
           <div class="skill-block">
             <div class="small-muted">Tools</div>
             <div class="skill-list">
-              <div repeat-for="skills.tools" class="tag" style="display:inline-block;margin-bottom:6px;">Docker</div>
+              <div repeat-for="skills.tools"><div value-of="skills.tools" class="tag" style="display:inline-block;margin-bottom:6px;"></div></div>
             </div>
           </div>
         </div>
@@ -155,17 +154,17 @@
       <section class="section" id="languages">
         <div class="section-title"><h2>Language</h2></div>
         <ul>
-          <li repeat-for="languages" style="margin-bottom:6px;"><strong value-of="name">English</strong> — <span value-of="level" class="small-muted">Intermediate</span></li>
+          <li repeat-for="languages" style="margin-bottom:6px;"><strong value-of="languages.name"></strong> — <span value-of="languages.level" class="small-muted"></span></li>
         </ul>
       </section>
 
       <section class="section" id="contact-brief">
         <div class="section-title"><h2>Contact</h2></div>
         <div class="small-muted">Email</div>
-        <div value-of="email">example@mail.com</div>
+        <div value-of="email"></div>
         <div style="height:10px"></div>
         <div class="small-muted">Phone</div>
-        <div value-of="phone">+90 5xx xxx xx xx</div>
+        <div value-of="phone"></div>
       </section>
     </aside>
   </main>
