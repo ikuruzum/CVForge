@@ -1,12 +1,33 @@
-using System.Text;
-using HtmlAgilityPack;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
+using System;
+using System.Threading.Tasks;
 
-string yamlFile = @"C:\Projeler\CVForge\examples\example.yaml";
+class Program
+{
+    static async Task<int> Main(string[] args)
+    {
+        try
+        {
+            var cli = new CommandLine(args);
 
-string yamlContent = File.ReadAllText(yamlFile);
+            if (cli.ShouldShowHelp)
+            {
+                CommandLine.ShowHelp();
+                return 0;
+            }
 
-CVForgeValue cv = CVForgeValue.FromYaml(yamlContent);
-cv = cv.FilterTags(new List<string> { "cs" });
-Console.WriteLine(cv.ToYaml());
+            if (cli.ShouldShowVersion)
+            {
+                CommandLine.ShowVersion();
+                return 0;
+            }
+
+            return await cli.ExecuteAsync() ? 0 : 1;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error: {ex.Message}");
+            CommandLine.ShowHelp();
+            return 1;
+        }
+    }
+}
