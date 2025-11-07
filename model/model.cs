@@ -53,7 +53,7 @@ public class CVForgeValue
 
     public string? URL { get; set; }
 
-    private Dictionary<string, CVForgeValue> data { get; set; } = new Dictionary<string, CVForgeValue>();
+    public Dictionary<string, CVForgeValue> data { get; set; } = new Dictionary<string, CVForgeValue>();
 
 
     private List<CVForgeValue>? ListValue
