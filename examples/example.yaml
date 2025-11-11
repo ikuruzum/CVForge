@@ -52,6 +52,7 @@ experience:
       #OR
       - value: Used Azure and Google Cloud services for cloud infrastructure.
         tags: Azure, GCP
+        exclusive: true 
     tags: Flutter, Dart, .NET, Golang, Socket.io, Azure, GCP, CI/CD, Nginx
 
 education:
@@ -63,7 +64,7 @@ education:
     yearRange: "2015 - 2019"
 
 skills:
-  mobile_frontend: Flutter, Dart, JavaScript
+  mobile: Flutter, Dart, JavaScript
   backend: Golang, .NET Core, C#, Node.js, Socket.io, Python, Flask
   databases: MySQL, Microsoft SQL Server, PostgreSQL, SQLite
   tools: Git, Subversion, Xcode, CocoaPods, Docker, Nginx, CI/CD

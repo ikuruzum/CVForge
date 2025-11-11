@@ -1,0 +1,88 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug CVForge (HTML)",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/main.go",
+      "args": [
+        "-d",
+        "${workspaceFolder}/examples/example.yaml",
+        "-t",
+        "${workspaceFolder}/examples/template.html",
+        "-f",
+        "html",
+        "-o",
+        "${workspaceFolder}/output.html"
+      ],
+      "env": {},
+      "showLog": true
+    },
+
+    {
+      "name": "Debug CVForge (HTML)",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/main.go",
+      "args": [
+        "-d",
+        "${workspaceFolder}/examples/example.yaml",
+        "-t",
+        "${workspaceFolder}/examples/template.html",
+        "-f",
+        "pdf",
+        "-o",
+        "${workspaceFolder}/output.pdf"
+      ],
+      "env": {},
+      "showLog": true
+    },
+
+    {
+      "name": "Debug with Custom Files",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/main.go",
+      "args": [
+        "${input:dataFile}",
+        "${input:templateFile}",
+        "${input:outputFile}",
+        "-f",
+        "${input:format}"
+      ],
+      "env": {},
+      "showLog": true
+    }
+  ],
+  "inputs": [
+    {
+      "id": "dataFile",
+      "type": "promptString",
+      "description": "Path to YAML data file",
+      "default": "${workspaceFolder}/examples/example.yaml"
+    },
+    {
+      "id": "templateFile",
+      "type": "promptString",
+      "description": "Path to HTML template file",
+      "default": "${workspaceFolder}/examples/template.html"
+    },
+    {
+      "id": "outputFile",
+      "type": "promptString",
+      "description": "Output file path",
+      "default": "${workspaceFolder}/output.html"
+    },
+    {
+      "id": "format",
+      "type": "pickString",
+      "description": "Output format",
+      "options": ["html", "pdf"],
+      "default": "html"
+    }
+  ]
+}

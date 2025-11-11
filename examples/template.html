@@ -99,7 +99,7 @@
           </article>
         </div>
       </section>
-      <section class="section" id="education">
+      <section class="section" id="education" if-exists="education">
         <div class="section-title">
           <h2>Education</h2>
         </div>
@@ -114,35 +114,35 @@
     </div>
 
     <!-- Sağ sütun: Teknik Yetenekler, Diller, İletişim (özet) -->
-    <aside class="right-col" role="complementary">
+    <aside class="right-col" role="complementary" if-exists="skills">
       <section class="section" id="technical-skills">
         <div class="section-title">
           <h2>Technical Skill</h2>
         </div>
 
         <div class="skill-grid">
-          <div class="skill-block">
+          <div class="skill-block" if-exists="skills.mobile">
             <div class="small-muted">Mobile / Front-End</div>
             <div class="skill-list">
               <div repeat-for="skills.mobile"><div value-of="skills.mobile" class="tag" style="display:inline-block;margin-bottom:6px;"></div></div>
             </div>
           </div>
 
-          <div class="skill-block">
+          <div class="skill-block" if-exists="skills.backend">
             <div class="small-muted">Back-End</div>
             <div  class="skill-list">
               <div repeat-for="skills.backend"><div value-of="skills.backend" class="tag" style="display:inline-block;margin-bottom:6px;"></div></div>
             </div>
           </div>
 
-          <div class="skill-block">
+          <div class="skill-block" if-exists="skills.databases">
             <div class="small-muted">Database</div>
             <div  class="skill-list">
               <div repeat-for="skills.databases"><div value-of="skills.databases" class="tag" style="display:inline-block;margin-bottom:6px;"></div></div>
             </div>
           </div>
 
-          <div class="skill-block">
+          <div class="skill-block" if-exists="skills.tools">
             <div class="small-muted">Tools</div>
             <div class="skill-list">
               <div repeat-for="skills.tools"><div value-of="skills.tools" class="tag" style="display:inline-block;margin-bottom:6px;"></div></div>
@@ -151,7 +151,7 @@
         </div>
       </section>
 
-      <section class="section" id="languages">
+      <section class="section" id="languages" if-exists="languages">
         <div class="section-title"><h2>Language</h2></div>
         <ul>
           <li repeat-for="languages" style="margin-bottom:6px;"><strong value-of="languages.name"></strong> — <span value-of="languages.level" class="small-muted"></span></li>
