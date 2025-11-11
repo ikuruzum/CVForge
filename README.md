@@ -31,7 +31,7 @@
     - [1. `value-of="field"`](#1-value-offield)
     - [2. `repeat-for="field"`](#2-repeat-forfield)
     - [3. `if-exists="field"`](#3-if-existsfield)
-    - [4. `value-of="."` (List item itself)](#4-value-of-list-item-itself)
+    - [4. `value-of="field"` (List item itself)](#4-value-of-list-item-itself)
   - [Minimal Template Example](#minimal-template-example)
   - [Example Run](#example-run)
   - [Notes](#notes)
@@ -135,11 +135,11 @@ Removes the element if the field does not exist.
 </div>
 ```
 
-### 4. `value-of="."` (List item itself)
+### 4. `value-of="name"` (List item itself)
 
 ```html
 <ul repeat-for="responsibilities">
-  <li value-of="."></li>
+  <li value-of="responsibilities"></li>
 </ul>
 ```
 
@@ -170,7 +170,7 @@ Removes the element if the field does not exist.
     <p value-of="description"></p>
 
     <ul repeat-for="responsibilities">
-      <li value-of="."></li>
+      <li value-of="responsibilities"></li>
     </ul>
   </article>
 </body>
