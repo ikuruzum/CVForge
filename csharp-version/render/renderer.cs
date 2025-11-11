@@ -4,7 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
-using Microsoft.Playwright;
+
+using PdfSharpCore;
+using PdfSharpCore.Pdf;
+
 
 public enum OutputFormat
 {
@@ -14,13 +17,11 @@ public enum OutputFormat
 
 public class TemplateEngine
 {
-
-
     public TemplateEngine()
     {
-
     }
-    private CVForgeValue _data;
+
+    private CVForgeValue? _data;
 
     public async Task<byte[]> Render(string templatePath, CVForgeValue data, OutputFormat format = OutputFormat.HTML)
     {
@@ -37,7 +38,7 @@ public class TemplateEngine
 
             return format switch
             {
-                OutputFormat.PDF => await GeneratePdf(html),
+                OutputFormat.PDF =>  GeneratePdf(html),
                 _ => System.Text.Encoding.UTF8.GetBytes(html)
             };
         }
@@ -58,9 +59,9 @@ public class TemplateEngine
         if (!string.IsNullOrEmpty(valueOf))
         {
             var cvForgeValue = GetCVForgeValueFromPath(context, valueOf);
-            if (cvForgeValue != null && cvForgeValue.Value != null)
+            if (cvForgeValue?.Value != null)
             {
-                var content = cvForgeValue.Value.ToString();
+                var content = cvForgeValue.Value.ToString() ?? string.Empty;
 
                 // If the CVForgeValue has a URL, wrap content in an anchor tag
                 if (!string.IsNullOrEmpty(cvForgeValue.URL))
@@ -86,6 +87,7 @@ public class TemplateEngine
             }
         }
     }
+
     private void ProcessRepeatFor(HtmlNode node, CVForgeValue context, string repeatPath)
     {
         var parent = node.ParentNode;
@@ -96,7 +98,7 @@ public class TemplateEngine
         }
 
         // Get the value at the repeat path
-        var value = GetValueFromPath(context, repeatPath);
+        var value = GetValueFromPath(context, repeatPath) ?? string.Empty;
 
         // If not found and path contains dots, try just the last part (for nested contexts)
         if (value == null && repeatPath.Contains('.'))
@@ -186,9 +188,9 @@ public class TemplateEngine
         }
     }
 
-    private string GetItemValue(CVForgeValue item)
+    private string GetItemValue(CVForgeValue? item)
     {
-        if (item == null || item.Value == null)
+        if (item?.Value == null)
             return "";
 
         // If value is a string, return it directly
@@ -203,7 +205,7 @@ public class TemplateEngine
         return item.Value.ToString() ?? "";
     }
 
-    private CVForgeValue GetCVForgeValueFromPath(CVForgeValue data, string path)
+    private CVForgeValue? GetCVForgeValueFromPath(CVForgeValue? data, string path)
     {
         if (data == null || string.IsNullOrEmpty(path))
             return null;
@@ -247,28 +249,60 @@ public class TemplateEngine
         return current;
     }
 
-    private object GetValueFromPath(CVForgeValue data, string path)
+    private object? GetValueFromPath(CVForgeValue? data, string path)
     {
         var cvForgeValue = GetCVForgeValueFromPath(data, path);
         return cvForgeValue?.Value;
     }
-    public static async Task<byte[]> HtmlToPdf_PlaywrightAsync(string html)
+
+    /// <summary>
+    /// Converts HTML to PDF using HtmlRenderer.PdfSharp
+    /// </summary>
+    /// <param name="html">HTML content to convert</param>
+    /// <param name="pageSize">Page size (default is A4)</param>
+    /// <param name="margins">Page margins in millimeters (top, right, bottom, left)</param>
+    /// <returns>PDF as byte array</returns>
+    public static byte[] HtmlToPdf_PdfSharp(string html, PdfSharp.PageSize? pageSize = null, int[]? margins = null)
     {
-        using var playwright = await Playwright.CreateAsync();
-        await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
-        var page = await browser.NewPageAsync();
-        await page.SetContentAsync(html);
-        // pdf options: format, margin, displayHeaderFooter, headerTemplate, footerTemplate
-        var pdf = await page.PdfAsync(new PagePdfOptions
+        // Set default page size to A4 if not specified
+        var actualPageSize = pageSize ?? PdfSharp.PageSize.A4;
+
+        // Set default margins (10mm all around) if not specified
+        var actualMargins = margins ?? new[] { 10, 10, 10, 10 }; // top, right, bottom, left
+
+        // Configure PDF document
+        var config = new PdfGenerateConfig
         {
-            Format = "A4",
-            Margin = new Margin { Top = "10mm", Bottom = "10mm", Left = "10mm", Right = "10mm" },
-            PrintBackground = true
-        });
-        return pdf;
+            PageSize = actualPageSize,
+            MarginTop = actualMargins[0],
+            MarginRight = actualMargins[1],
+            MarginBottom = actualMargins[2],
+            MarginLeft = actualMargins[3]
+        };
+
+        // Generate PDF
+        using var document = PdfGenerator.GeneratePdf(html, config);
+
+        // Save to memory stream and return as byte array
+        using var stream = new MemoryStream();
+        document.Save(stream, false);
+        return stream.ToArray();
     }
-    private async Task<byte[]> GeneratePdf(string html)
+
+  
+
+    private static byte[] GeneratePdf(string html)
     {
-        return await HtmlToPdf_PlaywrightAsync(html);
+        try
+        {
+            // First try using HtmlRenderer.PdfSharp
+            return HtmlToPdf_PdfSharp(html);
+        }
+        catch (Exception ex)
+        {
+            // Fall back to Playwright if PdfSharp fails
+            Console.WriteLine($"PdfSharp conversion failed, falling back to Playwright. Error: {ex.Message}");
+            return  HtmlToPdf_PdfSharp(html);
+        }
     }
 }
