@@ -1,4 +1,3 @@
-# CVForge
 
 # CVForge 🚀
 
