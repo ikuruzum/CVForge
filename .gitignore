@@ -1,1 +1,35 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.a
+*.o
+
+# Compiled output folders
+bin/
+build/
+dist/
+
+# Test binaries
+*.test
+
+# Go workspace stuff
+go.work
+go.work.sum
+
+# Dependency cache (mod cache kept outside repo usually)
+vendor/
+
+# Logs
+*.log
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+
+# Output files
 output.html
+output.pdf
