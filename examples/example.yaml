@@ -1,53 +1,52 @@
-name: "Kaan Alkan"
+name: "John Doe"
 title: "Software Developer"
-email: "ikuruzum@gmail.com"
-phone: "+90 538 039 60 32"
-location: "Eskişehir"
+email: "john.doe@example.com"
+phone: "+1 234 567 8901"
+location: "Anytown"
 links:
   - title: "LinkedIn"
-    url: "https://linkedin.com/in/kaan-alkan"
+    url: "https://linkedin.com/in/johndoe"
   - title: "GitHub"
-    url: "https://github.com/kaan-alkan"
+    url: "https://github.com/johndoe"
 
 summary: >
-  I am a software developer with over 2 years of experience in the industry.
-  On mobile, I focus mainly on Flutter development and support the Back-End space.
-  During this time I spend most of my time developing projects with Dart, MVVM, Bloc,
-  Riverpod, MobX, DDD, Clean Architecture, Socket.io, Go, GCP, Azure, DevOps, Git,
-  SVN, PostgreSQL, MySQL, SQLite.
+  I am a software developer with experience in the industry.
+  I focus on mobile and backend development, working with various technologies
+  including Flutter, Dart, MVVM, Bloc, Riverpod, and Clean Architecture.
+  My expertise extends to backend development with various databases and cloud platforms.
 
 experience:
   - title: "Software Developer"
-    company: "Evosoft"
+    company: "Tech Solutions Inc."
     startDate: "2022-06"
     endDate: "Present"
-    location: "Eskişehir"
-    description: "Full-stack work on mobile and backend systems; mobile apps, backend APIs, integrations and DevOps pipelines."
+    location: "Anytown"
+    description: "Full-stack development of mobile and backend systems; creating mobile apps, backend APIs, integrations and maintaining CI/CD pipelines."
     responsibilities:
-      - Developed Evolubult Mobile and its API (mobile part of a cloud-based CRM).
-      - Developed Evolubult PDKS and its API (work hours tracking & PTO requests).
-      - End-to-end development of mobile applications using Flutter and Dart (and some React-Native).
-      - Developed and maintained backend services and APIs using C# / .NET and Golang.
-      - Built .NET Core APIs and integrations for cash register systems and e-commerce platforms (e.g., Hepsiburada, Trendyol, WooCommerce, N11, Shopify).
-      - Implemented IMAP client, OAuth2 driver, cloud storage pieces (Azure), a Whatsapp multi-session client, and a Socket.io server (Golang)."
+      - Developed a mobile application and its API (cloud-based CRM solution).
+      - Created a personnel management system with work hours tracking and PTO requests.
+      - End-to-end development of mobile applications using Flutter, Dart, and React Native.
+      - Developed and maintained backend services and APIs using various technologies.
+      - Built APIs and integrations for e-commerce platforms and payment systems.
+      - Implemented various backend services including OAuth2 authentication, cloud storage, and real-time communication."
       - Created DevOps tools and CI/CD pipelines; managed Linux servers, Nginx, and deployment automation.
       #OR
       - value: Used Azure and Google Cloud services for cloud infrastructure.
         tags: Azure, GCP
     tags: Flutter, Dart, cs, .NET, Golang, Socket.io, Azure, GCP, CI/CD, Nginx
   - title: "Software Developer"
-    company: "Evosoft"
+    company: "Tech Solutions Inc."
     startDate: "2022-06"
     endDate: "Present"
-    location: "Eskişehir"
-    description: "Full-stack work on mobile and backend systems; mobile apps, backend APIs, integrations and DevOps pipelines."
+    location: "Anytown"
+    description: "Full-stack development of mobile and backend systems; creating mobile apps, backend APIs, integrations and maintaining CI/CD pipelines."
     responsibilities:
-      - Developed Evolubult Mobile and its API (mobile part of a cloud-based CRM).
-      - Developed Evolubult PDKS and its API (work hours tracking & PTO requests).
-      - End-to-end development of mobile applications using Flutter and Dart (and some React-Native).
-      - Developed and maintained backend services and APIs using C# / .NET and Golang.
-      - Built .NET Core APIs and integrations for cash register systems and e-commerce platforms (e.g., Hepsiburada, Trendyol, WooCommerce, N11, Shopify).
-      - Implemented IMAP client, OAuth2 driver, cloud storage pieces (Azure), a Whatsapp multi-session client, and a Socket.io server (Golang)."
+      - Developed a mobile application and its API (cloud-based CRM solution).
+      - Created a personnel management system with work hours tracking and PTO requests.
+      - End-to-end development of mobile applications using Flutter, Dart, and React Native.
+      - Developed and maintained backend services and APIs using various technologies.
+      - Built APIs and integrations for e-commerce platforms and payment systems.
+      - Implemented various backend services including OAuth2 authentication, cloud storage, and real-time communication."
       - Created DevOps tools and CI/CD pipelines; managed Linux servers, Nginx, and deployment automation.
       #OR
       - value: Used Azure and Google Cloud services for cloud infrastructure.
@@ -56,11 +55,11 @@ experience:
     tags: Flutter, Dart, .NET, Golang, Socket.io, Azure, GCP, CI/CD, Nginx
 
 education:
-  - degree: "Associate Degree, Mechanical Drawing and Construction"
-    institution: "Eskişehir Osmangazi Üniversitesi"
+  - degree: "Cool Degree"
+    institution: "Cool University"
     yearRange: "2020 - 2023"
-  - degree: "Vocational High School, Web Development"
-    institution: "Sabiha Gökçen MTAL"
+  - degree: "Cool High School"
+    institution: "Cool School"
     yearRange: "2015 - 2019"
 
 skills:

@@ -17,7 +17,6 @@
 
 ## Table of Contents
 
-- [CVForge](#cvforge)
 - [CVForge 🚀](#cvforge-)
   - [Table of Contents](#table-of-contents)
   - [How It Works](#how-it-works)
@@ -30,7 +29,7 @@
     - [1. `value-of="field"`](#1-value-offield)
     - [2. `repeat-for="field"`](#2-repeat-forfield)
     - [3. `if-exists="field"`](#3-if-existsfield)
-    - [4. `value-of="field"` (List item itself)](#4-value-of-list-item-itself)
+    - [4. `value-of="name"` (List item itself)](#4-value-ofname-list-item-itself)
   - [Minimal Template Example](#minimal-template-example)
   - [Example Run](#example-run)
   - [Notes](#notes)
@@ -83,7 +82,7 @@ summary: "I build maintainable software systems."
 
 experience:
   - title: "Software Developer"
-    company: "Evosoft"
+    company: "Company A"
     start: "2022"
     end: "Present"
     description: "Full-stack development."
