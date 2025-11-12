@@ -62,9 +62,11 @@ cvforge --template template.html --data resume.yaml --output resume.pdf --format
 |-----------|-------------|----------|---------|
 | `--template`, `-t` | Path to HTML template file | Yes | - |
 | `--data`, `-d` | Path to YAML or JSON data file | Yes | - |
-| `--output`, `-o` | Output file path | No | output.pdf |
+| `--output`, `-o` | Output file path or directory (for --iterate) | No | output.pdf |
 | `--format`, `-f` | Output format: `pdf` or `html` | No | pdf |
 | `--verbose`, `-v` | Enable verbose logs | No | false |
+| `--tags` | Filter data by tags (comma-separated) | No | - |
+| `--iterate` | Generate separate files for each tag | No | false |
 
 ### Example:
 
@@ -93,14 +95,40 @@ experience:
 
 ### Optional: Tags
 
-You may attach `_tags` to any item. They are stored but not currently used for filtering.
+You can attach `_tags` to any item in your YAML/JSON data. These tags can be used for filtering content or generating multiple output files.
 
 ```yaml
 experience:
   - title: "Backend Developer"
     company: "Some Company"
-    _tags: ["Go", "Distributed Systems"]
+    _tags: ["Go", "Backend"]
+  - title: "Frontend Developer"
+    company: "Another Company"
+    _tags: ["React", "Frontend"]
 ```
+
+#### Filtering with Tags
+
+Use the `--tags` flag to include only content with specific tags:
+
+```bash
+# Only include items tagged with "Go"
+cvforge -t template.html -d data.yaml -o output.pdf --tags "Go"
+```
+
+#### Generating Multiple Files
+
+Use the `--iterate` flag to generate separate output files for each unique tag found in your data:
+
+```bash
+# Will create output/Go.pdf, output/Backend.pdf, etc.
+cvforge -t template.html -d data.yaml -o output/ --iterate
+```
+
+When using `--iterate`:
+- The output path should be a directory
+- Each output file will be named after its tag (e.g., "Go.pdf")
+- Only items containing each specific tag will be included in their respective output files
 
 ## Template Rules
 
@@ -175,13 +203,31 @@ Removes the element if the field does not exist.
 </html>
 ```
 
-## Example Run
+## Example Runs
 
+### Basic Usage
 ```bash
-cvforge -t templates/classic.html -d data/kaan.yaml -o output/kaan.pdf -f pdf
+# Generate a single PDF
+cvforge -t templates/classic.html -d data/resume.yaml -o output/resume.pdf -f pdf
 ```
 
-**Outputs:** `output/kaan.pdf`
+### Filter by Tags
+```bash
+# Only include content with specific tags
+cvforge -t template.html -d data.yaml -o filtered.pdf --tags "Go,Backend"
+```
+
+### Generate Multiple Files
+```bash
+# Create separate files for each tag
+cvforge -t template.html -d data.yaml -o output/ --iterate
+```
+
+### Combine with Other Options
+```bash
+# Verbose output with iteration
+cvforge -t template.html -d data.yaml -o output/ --iterate -v
+```
 
 ## Notes
 

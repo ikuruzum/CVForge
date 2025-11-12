@@ -15,11 +15,11 @@ import (
 	"golang.org/x/net/html"
 )
 
-type OutputFormat int
+type OutputFormat string
 
 const (
-	OutputHTML OutputFormat = iota
-	OutputPDF
+	OutputHTML OutputFormat = "html"
+	OutputPDF OutputFormat = "pdf"
 )
 
 // Render renders HTML template with data and outputs in specified format

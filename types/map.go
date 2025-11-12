@@ -1,5 +1,7 @@
 package types
 
+import "slices"
+
 type CVForgeMap struct {
 	CVTagInfo
 	Value map[string]CVBase
@@ -27,7 +29,8 @@ func MakeCVForgeMap(value any) (CVForgeMap, bool) {
 	return CVForgeMap{}, false
 }
 
-func (m CVForgeMap) Filter(tags []string) (data CVBase, passed bool) {
+func (cm CVForgeMap) Filter(tags []string) (data CVBase, passed bool) {
+	m := cm.Copy().(CVForgeMap)
 	if m.FilterPass(tags) {
 		return m, true
 	}
@@ -42,5 +45,27 @@ func (m CVForgeMap) Filter(tags []string) (data CVBase, passed bool) {
 			delete(m.Value, key)
 		}
 	}
-	return m,  len(m.Value) > 0
+	return m, len(m.Value) > 0
+}
+func (m CVForgeMap) GetEveryTag() []string {
+	tags := make([]string, 0)
+	for _, v := range m.Value {
+		vTags := v.GetEveryTag()
+		for _, tag := range vTags {
+			if !slices.Contains(tags, tag) {
+				tags = append(tags, tag)
+			}
+		}
+	}
+	return tags
+}
+func (m CVForgeMap) Copy() CVBase {
+	cvm := make(map[string]CVBase)
+	for k, v := range m.Value {
+		cvm[k] = v.Copy()
+	}
+	return CVForgeMap{
+		CVTagInfo: m.CVTagInfo,
+		Value:     cvm,
+	}
 }

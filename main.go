@@ -22,6 +22,8 @@ var (
 	outputPath   string
 	format       string
 	verbose      bool
+	iterate      bool
+	tags         []string
 )
 
 func main() {
@@ -40,6 +42,11 @@ and structured data into beautiful PDFs or HTML documents.`,
 	rootCmd.Flags().StringVarP(&outputPath, "output", "o", "output.pdf", "Output file path")
 	rootCmd.Flags().StringVarP(&format, "format", "f", "pdf", "Output format: pdf or html")
 	rootCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose logging")
+	rootCmd.Flags().BoolVar(&iterate, "iterate", false, "Enable iteration mode (mutually exclusive with --tags)")
+	rootCmd.Flags().StringSliceVar(&tags, "tags", []string{}, "Tags to filter data (mutually exclusive with --iterate)")
+
+	// Mark flags as mutually exclusive
+	rootCmd.MarkFlagsMutuallyExclusive("iterate", "tags")
 
 	rootCmd.MarkFlagRequired("template")
 	rootCmd.MarkFlagRequired("data")
@@ -90,7 +97,24 @@ func run(cmd *cobra.Command, args []string) error {
 	if verbose {
 		fmt.Println("🔄 Rendering template...")
 	}
-
+	if iterate {
+		succ, errs := processIteration(outputPath, data, templatePath, outputFormat)
+		if len(errs) > 0 {
+			for _, err := range errs {
+				fmt.Printf("❌ %s\n", err)
+			}
+			return fmt.Errorf("failed to render template: %w", errs[0])
+		}
+		fmt.Printf("✅ %d templates rendered successfully\n", succ)
+		return nil
+	}
+	if len(tags) > 0 {
+		var ok bool
+		data, ok = data.Filter(tags)
+		if !ok {
+			return fmt.Errorf("no data found for tags: %v", tags)
+		}
+	}
 	result, err := engine.Render(templatePath, data, outputFormat)
 	if err != nil {
 		return fmt.Errorf("failed to render template: %w", err)
@@ -107,6 +131,35 @@ func run(cmd *cobra.Command, args []string) error {
 
 	fmt.Printf("✨ Success! Output written to: %s\n", outputPath)
 	return nil
+}
+
+func processIteration(outputPath string, data types.CVBase, templatePath string, outputFormat engine.OutputFormat) (int, []error) {
+	succ:=0
+	if _, err := os.Stat(outputPath); os.IsNotExist(err) {
+		if err := os.MkdirAll(filepath.Dir(outputPath), 0755); err != nil {
+			return succ, []error{fmt.Errorf("failed to create output directory: %w", err)}
+		}
+	}
+	var errors []error
+	tags := data.GetEveryTag()
+	for _, tag := range tags {
+		c := data.Copy()
+		c, ok := c.Filter([]string{tag})
+		if !ok {
+			continue
+		}
+		result, err := engine.Render(templatePath, c, outputFormat)
+		if err != nil {
+			errors = append(errors, fmt.Errorf("failed to render template: %w", err))
+		}
+		path := fmt.Sprintf("%s/%s.%s", outputPath, tag, outputFormat)
+		if err := os.WriteFile(path, result, 0644); err != nil {
+			errors = append(errors, fmt.Errorf("failed to write output: %w", err))
+		}
+		succ++
+	}
+
+	return succ, errors
 }
 
 func validateInputs() error {

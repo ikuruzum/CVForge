@@ -3,6 +3,8 @@ package types
 
 type CVBase interface{
 	Filter(tags []string) (data CVBase, passed bool)
+	GetEveryTag() []string
+	Copy() CVBase
 }
 
 func UnmarshalCVBase (value any) (CVBase, bool) {

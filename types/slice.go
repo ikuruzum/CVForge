@@ -37,7 +37,8 @@ func MakeCVForgeSlice(value any) (CVForgeSlice, bool) {
 		Value: slm,
 	}, true
 }
-func (s CVForgeSlice) Filter(tags []string) (data CVBase, passed bool) {
+func (cs CVForgeSlice) Filter(tags []string) (data CVBase, passed bool) {
+	s := cs.Copy().(CVForgeSlice)
 	if s.FilterPass(tags) {
 		return s, true
 	}
@@ -49,4 +50,27 @@ func (s CVForgeSlice) Filter(tags []string) (data CVBase, passed bool) {
 		}
 	}
 	return s, len(s.Value) > 0
+}
+
+func (s CVForgeSlice) GetEveryTag() []string {
+	tags := make([]string, 0)
+	for _, v := range s.Value {
+		vTags := v.GetEveryTag()
+		for _, tag := range vTags {
+			if !slices.Contains(tags, tag) {
+				tags = append(tags, tag)
+			}
+		}
+	}
+	return tags
+}
+func (s CVForgeSlice) Copy() CVBase {
+	cvs := make([]CVBase, len(s.Value))
+	for i := 0; i < len(s.Value); i++ {
+		cvs[i] = s.Value[i].Copy()
+	}
+	return CVForgeSlice{
+		CVTagInfo: s.CVTagInfo,
+		Value:     cvs,
+	}
 }

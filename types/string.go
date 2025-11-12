@@ -29,7 +29,20 @@ func MakeCVForgeString(value any) (CVForgeString, bool) {
 }
 func (s CVForgeString) Filter(tags []string) (data CVBase, passed bool) {
 	if s.FilterPass(tags) {
-		return s, true
+		return s.Copy(), true
 	}
-	return s, false
+	return s.Copy(), false
+}
+func (s CVForgeString) GetEveryTag() []string {
+	tags := []string{}
+	if s.Tags != nil {
+		tags = append(tags, s.Tags...)
+	}
+	return tags
+}
+func (s CVForgeString) Copy() CVBase {
+	return CVForgeString{
+		CVTagInfo: s.CVTagInfo,
+		Value:     s.Value,
+	}
 }
