@@ -121,7 +121,7 @@ func run(cmd *cobra.Command, args []string) error {
 	}
 
 	if verbose {
-		fmt.Printf("✅ Template rendered (%d bytes)\n", len(result))
+		fmt.Printf("✅ Template rendered successfully\n")
 	}
 
 	// Write output
