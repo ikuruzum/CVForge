@@ -196,8 +196,12 @@ func loadData(path string) (types.CVBase, error) {
 			return nil, err
 		}
 	}
-
-	return convertToCVBase(rawData), nil
+	var cv types.CVBase
+	cv, ok := types.UnmarshalCVBase(rawData)
+	if !ok {
+		return nil, fmt.Errorf("failed to unmarshal data")
+	}
+	return cv, nil
 }
 
 // convertToCVBase converts generic JSON data to CVBase types

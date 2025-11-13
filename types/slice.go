@@ -35,7 +35,7 @@ func MakeCVForgeSlice(value any) (CVForgeSlice, bool) {
 	}
 	return CVForgeSlice{
 		Value: slm,
-	}, true
+	}, false
 }
 func (cs CVForgeSlice) Filter(tags []string) (data CVBase, passed bool) {
 	s := cs.Copy().(CVForgeSlice)

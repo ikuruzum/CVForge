@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	
+
 	"golang.org/x/net/html"
 )
 
@@ -19,7 +19,7 @@ type OutputFormat string
 
 const (
 	OutputHTML OutputFormat = "html"
-	OutputPDF OutputFormat = "pdf"
+	OutputPDF  OutputFormat = "pdf"
 )
 
 // Render renders HTML template with data and outputs in specified format
@@ -89,7 +89,7 @@ func processNode(node *goquery.Selection, context types.CVBase) {
 }
 func checkIfExists(node *goquery.Selection, context types.CVBase, path string) bool {
 	value := getCVBaseFromPath(context, path)
-	
+
 	if value == nil {
 		return false
 	}
@@ -99,19 +99,20 @@ func checkIfExists(node *goquery.Selection, context types.CVBase, path string) b
 	case *types.CVForgeString:
 		// Empty string is considered as non-existent
 		return v.Value != ""
-	
+
 	case *types.CVForgeSlice:
 		// Empty slice is considered as non-existent
 		return len(v.Value) > 0
-	
+
 	case *types.CVForgeMap:
 		// Empty map is considered as non-existent
 		return len(v.Value) > 0
-	
+
 	default:
 		return false
 	}
 }
+
 // processRepeatFor handles repeat-for attribute for collections
 func processRepeatFor(node *goquery.Selection, context types.CVBase, repeatPath string) {
 	parent := node.Parent()
@@ -153,7 +154,7 @@ func processRepeatFor(node *goquery.Selection, context types.CVBase, repeatPath 
 
 	// Remove original node
 	node.Remove()
-
+	ignore := false
 	// Create a clone for each item
 	for _, item := range collection {
 		// Parse template HTML
@@ -163,6 +164,9 @@ func processRepeatFor(node *goquery.Selection, context types.CVBase, repeatPath 
 		}
 
 		clone := itemDoc.Find("body").Children().First()
+		if clone.Length() == 0 {
+			continue
+		}
 		clone.RemoveAttr("repeat-for")
 
 		// Process all value-of attributes in the clone
@@ -182,7 +186,11 @@ func processRepeatFor(node *goquery.Selection, context types.CVBase, repeatPath 
 
 			// If last parts match, use current item's value
 			if valueOfLast == repeatLast {
-				valueNode.SetHtml(getStringValue(item))
+				strval := getStringValue(item)
+				if strings.TrimSpace(strval) == "" {
+					ignore = true
+				}
+				valueNode.SetHtml(strval)
 				valueNode.RemoveAttr("value-of")
 			} else if strings.HasPrefix(valueOf, repeatPath+".") {
 				// Make path relative to current item
@@ -196,6 +204,10 @@ func processRepeatFor(node *goquery.Selection, context types.CVBase, repeatPath 
 
 		// Insert clone into parent
 		cloneHTML := getOuterHTML(clone)
+		if ignore {
+			ignore = false
+			continue
+		}
 		parent.AppendHtml(cloneHTML)
 	}
 }
