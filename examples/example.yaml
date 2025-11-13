@@ -33,7 +33,7 @@ experience:
       #OR
       - value: Used Azure and Google Cloud services for cloud infrastructure.
         tags: Azure, GCP
-    tags: Flutter, Dart, cs, .NET, Golang, Socket.io, Azure, GCP, CI/CD, Nginx
+    tags: [Flutter, Dart, cs, .NET, Golang, Socket.io, Azure, GCP, CI/CD, Nginx]
   - title: "Software Developer"
     company: "Tech Solutions Inc."
     startDate: "2022-06"
@@ -50,9 +50,9 @@ experience:
       - Created DevOps tools and CI/CD pipelines; managed Linux servers, Nginx, and deployment automation.
       #OR
       - value: Used Azure and Google Cloud services for cloud infrastructure.
-        tags: Azure, GCP
+        tags: [Azure, GCP]
         exclusive: true 
-    tags: Flutter, Dart, .NET, Golang, Socket.io, Azure, GCP, CI/CD, Nginx
+    tags: [Flutter, Dart, .NET, Golang, Socket.io, Azure, GCP, CI/CD, Nginx]
 
 education:
   - degree: "Cool Degree"
