@@ -22,7 +22,7 @@
     },
 
     {
-      "name": "Debug CVForge (HTML)",
+      "name": "Debug CVForge (PDF)",
       "type": "go",
       "request": "launch",
       "mode": "auto",
