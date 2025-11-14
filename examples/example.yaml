@@ -63,10 +63,10 @@ education:
     yearRange: "2015 - 2019"
 
 skills:
-  mobile: Flutter, Dart, JavaScript
-  backend: Golang, .NET Core, C#, Node.js, Socket.io, Python, Flask
-  databases: MySQL, Microsoft SQL Server, PostgreSQL, SQLite
-  tools: Git, Subversion, Xcode, CocoaPods, Docker, Nginx, CI/CD
+  mobile: [Flutter, Dart, JavaScript]
+  backend: [Golang, .NET Core, C#, Node.js, Socket.io, Python, Flask]
+  databases: [MySQL, Microsoft SQL Server, PostgreSQL, SQLite]
+  tools: [Git, Subversion, Xcode, CocoaPods, Docker, Nginx, CI/CD]
 
 languages:
   - name: English
