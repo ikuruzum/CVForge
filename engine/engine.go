@@ -96,15 +96,15 @@ func checkIfExists(node *goquery.Selection, context types.CVBase, path string) b
 
 	// Check different value types
 	switch v := value.(type) {
-	case *types.CVForgeString:
+	case types.CVForgeString:
 		// Empty string is considered as non-existent
 		return v.Value != ""
 
-	case *types.CVForgeSlice:
+	case types.CVForgeSlice:
 		// Empty slice is considered as non-existent
 		return len(v.Value) > 0
 
-	case *types.CVForgeMap:
+	case types.CVForgeMap:
 		// Empty map is considered as non-existent
 		return len(v.Value) > 0
 
@@ -130,9 +130,9 @@ func processRepeatFor(node *goquery.Selection, context types.CVBase, repeatPath 
 
 	// Handle different value types
 	switch v := value.(type) {
-	case *types.CVForgeSlice:
+	case types.CVForgeSlice:
 		collection = v.Value
-	case *types.CVForgeString:
+	case types.CVForgeString:
 		// Split comma-separated string
 		if v.Value != "" {
 			parts := strings.Split(v.Value, ",")
@@ -228,7 +228,7 @@ func getCVBaseFromPath(data types.CVBase, path string) types.CVBase {
 
 		// Handle array index
 		if index, err := strconv.Atoi(part); err == nil {
-			if slice, ok := current.(*types.CVForgeSlice); ok {
+			if slice, ok := current.(types.CVForgeSlice); ok {
 				if index >= 0 && index < len(slice.Value) {
 					current = slice.Value[index]
 					continue
@@ -238,7 +238,7 @@ func getCVBaseFromPath(data types.CVBase, path string) types.CVBase {
 		}
 
 		// Handle map access
-		if cvMap, ok := current.(*types.CVForgeMap); ok {
+		if cvMap, ok := current.(types.CVForgeMap); ok {
 			if val, exists := cvMap.Value[part]; exists {
 				current = val
 			} else {
@@ -264,9 +264,9 @@ func getStringValue(cv types.CVBase) string {
 	}
 
 	switch v := cv.(type) {
-	case *types.CVForgeString:
+	case types.CVForgeString:
 		return v.Value
-	case *types.CVForgeSlice:
+	case types.CVForgeSlice:
 		var parts []string
 		for _, item := range v.Value {
 			parts = append(parts, getStringValue(item))
@@ -284,11 +284,11 @@ func getURL(cv types.CVBase) string {
 	}
 
 	switch v := cv.(type) {
-	case *types.CVForgeString:
+	case types.CVForgeString:
 		return v.URL
-	case *types.CVForgeMap:
+	case types.CVForgeMap:
 		return v.URL
-	case *types.CVForgeSlice:
+	case types.CVForgeSlice:
 		return v.URL
 	}
 

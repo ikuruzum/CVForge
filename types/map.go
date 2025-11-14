@@ -12,9 +12,7 @@ func MakeCVForgeMap(value any) (CVForgeMap, bool) {
 		return CVForgeMap{}, false
 	}
 	if m, ok := value.(map[string]any); ok {
-		if m["value"] == nil {
-			return CVForgeMap{}, false
-		}
+		
 		cvm := make(map[string]CVBase)
 		for k, v := range m {
 			if cvb, ok := UnmarshalCVBase(v); ok {
