@@ -1,183 +1,496 @@
 <!DOCTYPE html>
 <html lang="tr">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Kişisel Özgeçmiş</title>
-<style>
-  :root{
-    --accent:#2b2b2b;
-    --muted:#777;
-    --tag-bg:#eee;
-    --page-bg:#fff;
-    --max-width:820px;
-  }
-  html,body{height:100%;background:var(--page-bg);margin:0;font-family:"Inter","Segoe UI",Roboto,Arial,sans-serif;color:#111;}
-  .container{max-width:var(--max-width);margin:24px auto;padding:32px;box-sizing:border-box;}
-  .header{display:flex;flex-direction:column;align-items:center;text-align:center;padding-bottom:18px;border-bottom:1px solid #e6e6e6;}
-  .name{font-size:36px;letter-spacing:6px;font-weight:700;margin:6px 0;color:var(--accent);}
-  .title{font-size:12px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:8px;}
-  .contact{font-size:13px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
-  .contact a{color:inherit;text-decoration:none;border-bottom:1px dashed #ddd;padding-bottom:1px}
-  .summary{margin-top:22px;font-size:14px;line-height:1.5;color:#222;max-width:760px;}
-  .main{display:grid;grid-template-columns:1fr;gap:22px;margin-top:26px;}
-  .section{padding:6px 0;}
-  .section-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-  .section-title h2{font-size:13px;letter-spacing:2px;text-transform:uppercase;margin:0;color:var(--accent);border-bottom:2px solid #ddd;padding-bottom:6px;}
-  .experience-item,.project-item{margin-bottom:14px;padding-bottom:8px;border-bottom:1px dashed #f0f0f0;}
-  .job-row,.project-row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;}
-  .position,.project-title{font-weight:700;font-size:15px;color:#111;}
-  .employer,.project-role{font-style:italic;color:var(--muted);font-size:13px;}
-  .dates{font-size:12px;color:var(--muted);}
-  .description{margin:8px 0 6px 0;font-size:14px;color:#333;}
-  .responsibilities,.project-details{margin:6px 0 8px 18px;}
-  .responsibilities li,.project-details li{margin-bottom:6px;font-size:14px;color:#333;}
-  .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
-  .tag{background:var(--tag-bg);padding:5px 10px;border-radius:999px;font-size:12px;color:#333;}
-  .education-item{margin-bottom:10px;}
-  .degree{font-weight:600;}
-  .institution{color:var(--muted);font-size:13px;}
-  .skill-grid{display:flex;flex-wrap:wrap;gap:12px;}
-  .skill-block{min-width:160px;}
-  .small-muted{font-size:13px;color:var(--muted);margin-bottom:6px;}
-  footer{margin-top:18px;color:var(--muted);font-size:12px;text-align:center;}
-  @media(min-width:980px){
-    .main{grid-template-columns: 2fr 1fr; gap:28px;}
-    .left-col{padding-right:18px;border-right:1px solid #f2f2f2;}
-    .right-col{padding-left:18px;}
-  }
-</style>
-</head>
-<body>
-<div class="container">
-  <header class="header" role="banner">
-    <div class="name" value-of="name"></div>
-    <div class="title" value-of="title"></div>
-    <div class="contact" aria-label="İletişim bilgileri">
-      <span value-of="email"><a href="mailto:example@mail.com"></a></span>
-      <span value-of="phone"></span>
-      <span value-of="location"></span>
-      <div repeat-for="links"><span value-of="links.title"></span></div>
-    </div>
-    <p class="summary" value-of="summary"></p>
-  </header>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Kişisel Özgeçmiş</title>
+    <style>
+      :root {
+        --accent: #2b2b2b;
+        --muted: #6f6f6f;
+        --tag-bg: #f1f1f1;
+        --page-bg: #ffffff;
+        --max-width: 780px;
+        --pad: 16px;
+        --name-size: 28px;
+        --title-size: 11px;
+        --body-size: 13px;
+        --muted-size: 12px;
+        --gap: 14px;
+      }
+      html,
+      body {
+        height: 100%;
+        background: var(--page-bg);
+        margin: 0;
+        font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+        color: #111;
+        -webkit-font-smoothing: antialiased;
+      }
+      .container {
+        max-width: var(--max-width);
+        margin: 16px auto;
+        padding: var(--pad);
+        box-sizing: border-box;
+        border-radius: 6px;
+      }
 
-  <main class="main" role="main">
-    <div class="left-col">
-      <!-- EXPERIENCE -->
-      <section class="section" id="experience">
-        <div class="section-title"><h2>Experience</h2></div>
-        <div repeat-for="experience" class="experience-list">
-          <article class="experience-item" aria-label="İş deneyimi">
-            <div class="job-row">
-              <div>
-                <div class="position" value-of="experience.position"></div>
-                <div class="employer" value-of="experience.company"></div>
+      /* HEADER */
+      .header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #ececec;
+        margin-bottom: var(--gap);
+      }
+      .name {
+        font-size: var(--name-size);
+        letter-spacing: 2px;
+        font-weight: 700;
+        margin: 6px 0;
+        color: var(--accent);
+      }
+      .title {
+        font-size: var(--title-size);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .contact {
+        font-size: var(--muted-size);
+        color: var(--muted);
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+      }
+      .contact a {
+        color: inherit;
+        text-decoration: none;
+        border-bottom: 1px dashed #e6e6e6;
+        padding-bottom: 1px;
+      }
+      .summary {
+        margin-top: 12px;
+        font-size: var(--body-size);
+        line-height: 1.45;
+        color: #222;
+        max-width: 740px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      /* LAYOUT */
+      .main {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+      .section {
+        padding: 4px 0;
+      }
+      .section-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+      .section-title h2 {
+        font-size: 12px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin: 0;
+        color: var(--accent);
+        padding-bottom: 6px;
+        border-bottom: 1px solid #f2f2f2;
+      }
+
+      /* ITEMS */
+      .experience-item,
+      .project-item {
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+        border-bottom: 1px dashed #f6f6f6;
+      }
+      .job-row,
+      .project-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .position,
+      .project-title {
+        font-weight: 700;
+        font-size: 14px;
+        color: #111;
+      }
+      .employer,
+      .project-role {
+        font-style: italic;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .dates {
+        font-size: 12px;
+        color: var(--muted);
+        min-width: 90px;
+        text-align: right;
+      }
+      .description {
+        margin: 6px 0 6px 0;
+        font-size: 13px;
+        color: #333;
+      }
+
+      /* RESPONSIBILITIES */
+      .responsibilities,
+      .project-details {
+        margin: 6px 0 8px 0;
+        padding-left: 16px;
+      }
+      .responsibilities li,
+      .project-details li {
+        margin-bottom: 6px;
+        font-size: 13px;
+        color: #333;
+        line-height: 1.4;
+      }
+
+      /* TAGS */
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .tag {
+        background: var(--tag-bg);
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        color: #333;
+      }
+
+      /* EDUCATION */
+      .education-item {
+        margin-bottom: 8px;
+      }
+      .degree {
+        font-weight: 600;
+        font-size: 13px;
+      }
+      .institution {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      /* SKILLS */
+      .skills,
+      .tech-skills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 8px;
+        margin-top: 8px;
+        font-size: 11px;
+      }
+      .skill,
+      .skill-item {
+        background: var(--tag-bg);
+        padding: 2px 6px;
+        border-radius: 4px;
+        line-height: 1.2;
+        white-space: nowrap;
+      }
+      .skill-block {
+        flex: 1 1 140px;
+        min-width: 120px;
+      }
+      .skill-block .small-muted {
+        padding-top: 6px;
+        font-size: 14px;
+        margin-bottom: 6px;
+        color: var(--muted);
+      }
+      .skill-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .skill-list .tag {
+        padding: 6px 8px;
+        border-radius: 8px;
+        font-size: 12px;
+      }
+
+      /* LANGUAGES */
+      #languages ul {
+        padding-left: 16px;
+        margin: 6px 0;
+      }
+      #languages li {
+        margin-bottom: 6px;
+      }
+      #languages strong {
+        font-size: 11px;
+        display: inline-block;
+        min-width: 70px;
+      }
+      #languages span {
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      /* CONTACT BRIEF */
+      .contact-value {
+        word-break: break-all;
+        font-size: 12px;
+      }
+
+      footer {
+        margin-top: 14px;
+        color: var(--muted);
+        font-size: 12px;
+        text-align: center;
+      }
+      /* PRINT / PDF düzeltmeleri: ekle bunları style sonuna */
+      @page {
+        size: A4 portrait;
+        margin: 12mm;
+      }
+      /* Eğer portrait sığmıyorsa, PDF alırken landscape için:
+   @page { size: A4 landscape; margin: 12mm; }
+*/
+
+      @media print {
+        /* zorla iki sütun düzeni */
+        .main {
+          display: grid !important;
+          grid-template-columns: 2fr 1fr !important;
+          gap: 18px !important;
+        }
+
+        /* container PDF'te tam genişlik kullansın, ortalamayı kaldır */
+        .container {
+          max-width: none !important;
+          width: 100% !important;
+          margin: 0 !important;
+          padding: 12mm !important;
+          box-shadow: none !important;
+          border-radius: 0 !important;
+        }
+
+        /* sağ/sol kolon paddingle hizalanır */
+        .left-col {
+          padding-right: 12px !important;
+          border-right: 1px solid #f5f5f5;
+        }
+        .right-col {
+          padding-left: 12px !important;
+        }
+
+        /* tarihlerin ve küçük öğelerin hizası bozulmasın */
+        .dates {
+          min-width: 110px !important;
+          text-align: right;
+        }
+
+        /* sayfa içine hoş olmayan bölünmeleri engelle */
+        .experience-item,
+        .project-item,
+        .education-item,
+        .skill-block {
+          break-inside: avoid-page;
+          page-break-inside: avoid;
+          -webkit-column-break-inside: avoid;
+        }
+
+        /* başlık altındaki çizgiler PDF'te ince görünebilir, istersen kaldır */
+        .section-title h2 {
+          border-bottom: none;
+          padding-bottom: 4px;
+        }
+
+        /* küçük tip ayarı (gerekiyorsa daha kompakt olacak şekilde küçült) */
+        body {
+          font-size: 12px;
+        }
+      }
+
+      /* RESPONSIVENESS */
+      @media (min-width: 980px) {
+        .main {
+          grid-template-columns: 2fr 1fr;
+          gap: 22px;
+        }
+        .left-col {
+          padding-right: 14px;
+          border-right: 1px solid #f5f5f5;
+        }
+        .right-col {
+          padding-left: 14px;
+        }
+        .dates {
+          min-width: 120px;
+        }
+      }
+      @media (max-width: 480px) {
+        :root {
+          --name-size: 22px;
+          --body-size: 13px;
+        }
+        .section-title h2 {
+          font-size: 11px;
+        }
+        .skill-block {
+          flex: 1 1 45%;
+        }
+        .dates {
+          text-align: left;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header class="header" role="banner">
+        <div class="name" value-of="name"></div>
+        <div class="title" value-of="title"></div>
+        <div class="contact" aria-label="İletişim bilgileri">
+          <span value-of="email" class="contact-email"
+            ><a href="mailto:example@mail.com"></a
+          ></span>
+          <span value-of="phone" class="contact-phone"></span>
+          <span value-of="location"></span>
+          <div repeat-for="links"><span value-of="links.title"></span></div>
+        </div>
+        <p class="summary" value-of="summary"></p>
+      </header>
+
+      <main class="main" role="main">
+        <div class="left-col">
+          <!-- EXPERIENCE -->
+          <section class="section" id="experience">
+            <div class="section-title"><h2>Experience</h2></div>
+            <div repeat-for="experience" class="experience-list">
+              <article class="experience-item" aria-label="İş deneyimi">
+                <div class="job-row">
+                  <div>
+                    <div class="position" value-of="experience.position"></div>
+                    <div class="employer" value-of="experience.company"></div>
+                  </div>
+                  <div class="dates">
+                    <div value-of="experience.startDate"></div>
+                    <div>-</div>
+                    <div value-of="experience.endDate"></div>
+                  </div>
+                </div>
+                <div
+                  class="description"
+                  value-of="experience.description"
+                ></div>
+                <ul
+                  class="responsibilities"
+                  repeat-for="experience.responsibilities"
+                >
+                  <li value-of="experience.responsibilities"></li>
+                </ul>
+              </article>
+            </div>
+          </section>
+          <section class="section" id="projects" if-exists="projects">
+            <div class="section-title"><h2>Projects</h2></div>
+            <div class="project-list" repeat-for="projects">
+              <article class="project-item" aria-label="Proje">
+                <div class="project-row">
+                  <div class="project-title" value-of="projects.name"></div>
+                  <div class="dates" value-of="projects.year"></div>
+                </div>
+                <div class="project-role" value-of="projects.description"></div>
+                <div class="description" value-of="projects.notes"></div>
+              </article>
+            </div>
+          </section>
+
+          <!-- EDUCATION -->
+          <section class="section" id="education" if-exists="education">
+            <div class="section-title"><h2>Education</h2></div>
+            <div class="education-list">
+              <div repeat-for="education" class="education-item">
+                <div class="degree" value-of="education.degree"></div>
+                <div class="institution" value-of="education.institution"></div>
+                <div class="dates" value-of="education.yearRange"></div>
               </div>
-              <div class="dates">
-                <div value-of="experience.startDate"></div>
-                <div> - </div>
-                <div value-of="experience.endDate"></div>
+            </div>
+          </section>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <aside class="right-col" role="complementary" if-exists="skills">
+          <section class="section" id="technical-skills">
+            <div class="section-title"><h2>Technical Skill</h2></div>
+            <div class="skill-grid">
+              <div class="skill-block" if-exists="skills.mobile">
+                <div class="small-muted">Mobile / Front-End</div>
+                <div class="skill-list">
+                  <div repeat-for="skills.mobile">
+                    <div value-of="skills.mobile" class="tag"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="skill-block" if-exists="skills.backend">
+                <div class="small-muted">Back-End</div>
+                <div class="skill-list">
+                  <div repeat-for="skills.backend">
+                    <div value-of="skills.backend" class="tag"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="skill-block" if-exists="skills.databases">
+                <div class="small-muted">Database</div>
+                <div class="skill-list">
+                  <div repeat-for="skills.databases">
+                    <div value-of="skills.databases" class="tag"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="skill-block" if-exists="skills.tools">
+                <div class="small-muted">Tools</div>
+                <div class="skill-list">
+                  <div repeat-for="skills.tools">
+                    <div value-of="skills.tools" class="tag"></div>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="description" value-of="experience.description"></div>
-            <ul class="responsibilities" repeat-for="experience.responsibilities">
-              <li value-of="experience.responsibilities"></li>
-            </ul>
-          </article>
-        </div>
-      </section>
+          </section>
 
-      <!-- PROJECTS -->
-      <section class="section" id="projects" if-exists="projects">
-        <div class="section-title"><h2>Projects</h2></div>
-        <div class="project-list" repeat-for="projects">
-          <article class="project-item" aria-label="Proje">
-            <div class="project-row">
-              <div class="project-title" value-of="projects.title"></div>
-              <div class="dates" value-of="projects.year"></div>
-            </div>
-            <div class="project-role" value-of="projects.role"></div>
-            <div class="description" value-of="projects.description"></div>
-            <ul class="project-details" repeat-for="projects.details">
-              <li value-of="projects.details"></li>
+          <section class="section" id="languages" if-exists="languages">
+            <div class="section-title"><h2>Language</h2></div>
+            <ul>
+              <li repeat-for="languages" style="margin-bottom: 2px">
+                <strong value-of="languages.name"></strong> —
+                <span value-of="languages.level"></span>
+              </li>
             </ul>
-            <div class="tags" repeat-for="projects.tags">
-              <div class="tag" value-of="projects.tags"></div>
-            </div>
-          </article>
-        </div>
-      </section>
+          </section>
 
-      <!-- EDUCATION -->
-      <section class="section" id="education" if-exists="education">
-        <div class="section-title"><h2>Education</h2></div>
-        <div class="education-list">
-          <div repeat-for="education" class="education-item">
-            <div class="degree" value-of="education.degree"></div>
-            <div class="institution" value-of="education.institution"></div>
-            <div class="dates" value-of="education.yearRange"></div>
-          </div>
-        </div>
-      </section>
+          <section class="section" id="contact-brief">
+            <div class="section-title"><h2>Contact</h2></div>
+            <div class="small-muted">Email</div>
+            <div value-of="email" class="contact-value"></div>
+            <div style="height: 6px"></div>
+            <div class="small-muted">Phone</div>
+            <div value-of="phone" class="contact-value"></div>
+          </section>
+        </aside>
+      </main>
+
     </div>
-
-    <!-- RIGHT COLUMN -->
-    <aside class="right-col" role="complementary" if-exists="skills">
-      <section class="section" id="technical-skills">
-        <div class="section-title"><h2>Technical Skill</h2></div>
-        <div class="skill-grid">
-          <div class="skill-block" if-exists="skills.mobile">
-            <div class="small-muted">Mobile / Front-End</div>
-            <div class="skill-list">
-              <div repeat-for="skills.mobile"><div value-of="skills.mobile" class="tag" style="display:inline-block;margin-bottom:6px;"></div></div>
-            </div>
-          </div>
-          <div class="skill-block" if-exists="skills.backend">
-            <div class="small-muted">Back-End</div>
-            <div class="skill-list">
-              <div repeat-for="skills.backend"><div value-of="skills.backend" class="tag" style="display:inline-block;margin-bottom:6px;"></div></div>
-            </div>
-          </div>
-          <div class="skill-block" if-exists="skills.databases">
-            <div class="small-muted">Database</div>
-            <div class="skill-list">
-              <div repeat-for="skills.databases"><div value-of="skills.databases" class="tag" style="display:inline-block;margin-bottom:6px;"></div></div>
-            </div>
-          </div>
-          <div class="skill-block" if-exists="skills.tools">
-            <div class="small-muted">Tools</div>
-            <div class="skill-list">
-              <div repeat-for="skills.tools"><div value-of="skills.tools" class="tag" style="display:inline-block;margin-bottom:6px;"></div></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="section" id="languages" if-exists="languages">
-        <div class="section-title"><h2>Language</h2></div>
-        <ul>
-          <li repeat-for="languages" style="margin-bottom:6px;">
-            <strong value-of="languages.name"></strong> — 
-            <span value-of="languages.level" class="small-muted"></span>
-          </li>
-        </ul>
-      </section>
-
-      <section class="section" id="contact-brief">
-        <div class="section-title"><h2>Contact</h2></div>
-        <div class="small-muted">Email</div>
-        <div value-of="email"></div>
-        <div style="height:10px"></div>
-        <div class="small-muted">Phone</div>
-        <div value-of="phone"></div>
-      </section>
-    </aside>
-  </main>
-
-  <footer>
-    <div value-of="footer.note">Resume generated — customize as needed.</div>
-  </footer>
-</div>
-</body>
+  </body>
 </html>
