@@ -197,7 +197,7 @@ func loadData(path string) (types.CVBase, error) {
 		}
 	}
 	var cv types.CVBase
-	cv, ok := types.UnmarshalCVBase(rawData)
+	cv, ok := types.UnmarshalCVBase(rawData, types.DefaultCVTagInfo())
 	if !ok {
 		return nil, fmt.Errorf("failed to unmarshal data")
 	}

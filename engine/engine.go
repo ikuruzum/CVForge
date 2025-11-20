@@ -54,12 +54,12 @@ func Render(templatePath string, data types.CVBase, format OutputFormat) ([]byte
 // processNode recursively processes HTML nodes
 func processNode(node *goquery.Selection, context types.CVBase) {
 	node.Each(func(i int, s *goquery.Selection) {
-		if ifExist, exists := s.Attr("if-exist"); exists {
+		if ifExist, exists := s.Attr("if-exists"); exists {
 			if !checkIfExists(s, context, ifExist) {
 				s.Remove()
 				return // Node removed, no further processing needed
 			}
-			s.RemoveAttr("if-exist") // Remove attribute, continue processing
+			s.RemoveAttr("if-exists") // Remove attribute, continue processing
 		}
 		// Process repeat-for first (it replaces the node)
 		if repeatFor, exists := s.Attr("repeat-for"); exists {
@@ -190,7 +190,12 @@ func processRepeatFor(node *goquery.Selection, context types.CVBase, repeatPath 
 				if strings.TrimSpace(strval) == "" {
 					ignore = true
 				}
-				valueNode.SetHtml(strval)
+				url := getURL(item)
+				if url != "" {
+					valueNode.SetHtml(fmt.Sprintf(`<a href="%s">%s</a>`, url, strval))
+				} else {
+					valueNode.SetHtml(strval)
+				}
 				valueNode.RemoveAttr("value-of")
 			} else if strings.HasPrefix(valueOf, repeatPath+".") {
 				// Make path relative to current item

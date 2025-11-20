@@ -6,41 +6,59 @@ import (
 )
 
 type CVTagInfo struct {
-	Tags     []string `yaml:"tags,omitempty"`
-	URL      string   `yaml:"url,omitempty"`
-	Explicit bool     `yaml:"explicit,omitempty"`
+	Tags      []string `yaml:"tags,omitempty"`
+	URL       string   `yaml:"url,omitempty"`
+	Exclusive bool     `yaml:"exclusive,omitempty"`
+}
+
+func DefaultCVTagInfo() CVTagInfo {
+	return CVTagInfo{Tags: make([]string, 0), URL: "", Exclusive: false}
+}
+func (t *CVTagInfo) inherit(inheritedCVTagInfo CVTagInfo) {
+	if t.URL == "" {
+		t.URL = inheritedCVTagInfo.URL
+	}
+
 }
 
 func CVTagInfoFromMap(m map[string]any) CVTagInfo {
-	tags := []string{}
-	url := ""
-	explicit := false
+	info := DefaultCVTagInfo()
 	if m == nil {
-		return CVTagInfo{}
+		return info
 	}
 	if m["tags"] != nil {
-		if _, ok := m["tags"].([]string); ok {
-			tags = m["tags"].([]string)
+		if _, ok := m["tags"].([]any); ok {
+			for _, tag := range m["tags"].([]any) {
+				if t, ok := tag.(string); ok {
+					info.Tags = append(info.Tags, strings.ToLower(t))
+				}
+			}
 		}
 		if _, ok := m["tags"].(string); ok {
-			tags = strings.Split(m["tags"].(string), ",")
+			for _, tag := range strings.Split(m["tags"].(string), ",") {
+				info.Tags = append(info.Tags, strings.ToLower(tag))
+			}
 		}
 	}
 	if m["url"] != nil {
 		if _, ok := m["url"].(string); ok {
-			url = m["url"].(string)
+			info.URL = m["url"].(string)
 		}
 	}
-	if m["explicit"] != nil {
-		if _, ok := m["explicit"].(bool); ok {
-			explicit = m["explicit"].(bool)
+	if m["exclusive"] != nil {
+		if _, ok := m["exclusive"].(bool); ok {
+			info.Exclusive = m["exclusive"].(bool)
 		}
+		if _, ok := m["exclusive"].(string); ok {
+			info.Exclusive = m["exclusive"].(string) == "true" || m["exclusive"].(string) == "1"
+		}
+		if _, ok := m["exclusive"].(int); ok {
+			info.Exclusive = m["exclusive"].(int) == 1
+		}
+
 	}
-	return CVTagInfo{
-		Tags:     tags,
-		URL:      url,
-		Explicit: explicit,
-	}
+	return info
+
 }
 
 func (t *CVTagInfo) FilterPass(tags []string) (pass bool) {
@@ -51,7 +69,7 @@ func (t *CVTagInfo) FilterPass(tags []string) (pass bool) {
 			break
 		}
 	}
-	if !pass && t.Explicit {
+	if !pass && t.Exclusive {
 		return false
 	}
 

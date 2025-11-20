@@ -1,52 +1,61 @@
 package types
 
-import "slices"
+import (
+	"slices"
+	"strings"
+)
+
 
 type CVForgeMap struct {
 	CVTagInfo
 	Value map[string]CVBase
 }
 
-func MakeCVForgeMap(value any) (CVForgeMap, bool) {
+func MakeCVForgeMap(value any, inheritedCVTagInfo CVTagInfo) (CVForgeMap, bool) {
+	info := DefaultCVTagInfo();
+	info.inherit(inheritedCVTagInfo)
 	if value == nil {
-		return CVForgeMap{}, false
+		return CVForgeMap{CVTagInfo: info}, false
 	}
 	if m, ok := value.(map[string]any); ok {
-		
+		info = CVTagInfoFromMap(m)
+		info.inherit(inheritedCVTagInfo)
 		cvm := make(map[string]CVBase)
 		for k, v := range m {
-			if cvb, ok := UnmarshalCVBase(v); ok {
+			if len(strings.TrimSpace(k)) == 0 {
+				continue
+			}
+			if cvb, ok := UnmarshalCVBase(v,info); ok {
 				cvm[k] = cvb
 			}
 		}
 		return CVForgeMap{
-			CVTagInfo: CVTagInfoFromMap(m),
+			CVTagInfo: info,
 			Value:     cvm,
 		}, true
 	}
-	return CVForgeMap{}, false
+	return CVForgeMap{CVTagInfo: info}, false
 }
 
 func (cm CVForgeMap) Filter(tags []string) (data CVBase, passed bool) {
 	m := cm.Copy().(CVForgeMap)
-	if m.FilterPass(tags) {
-		return m, true
-	}
-	keys := make([]string, 0)
+    keys := make([]string, 0)
 	for k := range m.Value {
 		keys = append(keys, k)
 	}
-	for i := 0; i < len(keys); i++ {
+	for i:=0; i < len(keys); i++ {
 		key := keys[i]
-		_, passed = m.Value[key].Filter(tags)
-		if !passed {
+		value, passed := m.Value[key].Filter(tags)
+		if passed {
+			m.Value[key] = value
+		} else {
 			delete(m.Value, key)
 		}
 	}
-	return m, len(m.Value) > 0
+	return m, m.FilterPass(tags)
 }
 func (m CVForgeMap) GetEveryTag() []string {
-	tags := make([]string, 0)
+	tags := m.Tags[:]
 	for _, v := range m.Value {
 		vTags := v.GetEveryTag()
 		for _, tag := range vTags {

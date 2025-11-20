@@ -7,28 +7,36 @@ type CVForgeString struct {
 	Value string
 }
 
-func MakeCVForgeString(value any) (CVForgeString, bool) {
+func MakeCVForgeString(value any, inheritedCVTagInfo CVTagInfo) (CVForgeString, bool) {
+	info := DefaultCVTagInfo()
+	info.inherit(inheritedCVTagInfo)
 	if value == nil {
-		return CVForgeString{}, false
+		return CVForgeString{CVTagInfo: info}, false
 	}
 	switch value.(type) {
 	case string, int, int64, float64, bool:
 		return CVForgeString{
+			CVTagInfo: info,
 			Value: fmt.Sprintf("%v", value),
 		}, true
 	case map[string]any:
 		m := value.(map[string]any)
+		info = CVTagInfoFromMap(m)
+		info.inherit(inheritedCVTagInfo)
 		if m["value"] == nil {
-			return CVForgeString{}, false
+			return CVForgeString{CVTagInfo: info}, false
 		}
 		if str, ok := m["value"].(string); ok {
+			if len(str) == 0 {
+				return CVForgeString{CVTagInfo: info}, false
+			}
 			return CVForgeString{
-				CVTagInfo: CVTagInfoFromMap(m),
+				CVTagInfo: info,
 				Value:     str,
 			}, true
 		}
 	}
-	return CVForgeString{}, false
+	return CVForgeString{CVTagInfo: info}, false
 }
 
 func (s CVForgeString) Filter(tags []string) (data CVBase, passed bool) {
@@ -38,11 +46,7 @@ func (s CVForgeString) Filter(tags []string) (data CVBase, passed bool) {
 	return s.Copy(), false
 }
 func (s CVForgeString) GetEveryTag() []string {
-	tags := []string{}
-	if s.Tags != nil {
-		tags = append(tags, s.Tags...)
-	}
-	return tags
+	return s.Tags[:]
 }
 func (s CVForgeString) Copy() CVBase {
 	return CVForgeString{

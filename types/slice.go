@@ -7,53 +7,56 @@ type CVForgeSlice struct {
 	Value []CVBase
 }
 
-func MakeCVForgeSlice(value any) (CVForgeSlice, bool) {
+func MakeCVForgeSlice(value any, inheritedCVTagInfo CVTagInfo) (CVForgeSlice, bool) {
+	info := DefaultCVTagInfo()
+	info.inherit(inheritedCVTagInfo)
 	if value == nil {
-		return CVForgeSlice{}, false
+		return CVForgeSlice{CVTagInfo:info}, false
 	}
 
 	var slm []CVBase
 	if sl, ok := value.([]any); ok {
 		for i := 0; i < len(sl); i++ {
-			if cvb, ok := UnmarshalCVBase(sl[i]); ok {
+			if cvb, ok := UnmarshalCVBase(sl[i],info); ok {
 				slm = append(slm, cvb)
 			}
 		}
 	}
 	if m, ok := value.(map[string]any); ok && m["value"] != nil {
+		info = CVTagInfoFromMap(m)
+		info.inherit(inheritedCVTagInfo)
 		if sl, ok := m["value"].([]any); ok {
 			for i := 0; i < len(sl); i++ {
-				if cvb, ok := UnmarshalCVBase(sl[i]); ok {
+				if cvb, ok := UnmarshalCVBase(sl[i],info); ok {
 					slm = append(slm, cvb)
 				}
 			}
 		}
 		return CVForgeSlice{
-			CVTagInfo: CVTagInfoFromMap(m),
+			CVTagInfo: info,
 			Value:     slm,
 		}, true
 	}
 	return CVForgeSlice{
-		Value: slm,
+		CVTagInfo: info,
+		Value:     slm,
 	}, len(slm) > 0
 }
 func (cs CVForgeSlice) Filter(tags []string) (data CVBase, passed bool) {
 	s := cs.Copy().(CVForgeSlice)
-	if s.FilterPass(tags) {
-		return s, true
-	}
-	for i := 0; i < len(s.Value); i++ {
-		_, passed = s.Value[i].Filter(tags)
-		if !passed {
-			s.Value = slices.Delete(s.Value, i, 1)
-			i--
+	filtered := s.Value[:0] // aynı array'i kullanır, GC yok
+	for i := range s.Value {
+		f, passed := s.Value[i].Filter(tags)
+		if passed {
+			filtered = append(filtered, f)
 		}
 	}
-	return s, len(s.Value) > 0
+	s.Value = filtered
+	return s, s.FilterPass(tags)
 }
 
 func (s CVForgeSlice) GetEveryTag() []string {
-	tags := make([]string, 0)
+	tags := s.Tags[:]
 	for _, v := range s.Value {
 		vTags := v.GetEveryTag()
 		for _, tag := range vTags {
@@ -62,6 +65,7 @@ func (s CVForgeSlice) GetEveryTag() []string {
 			}
 		}
 	}
+
 	return tags
 }
 func (s CVForgeSlice) Copy() CVBase {
