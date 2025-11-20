@@ -42,6 +42,49 @@
     },
 
     {
+      "name": "Debug CVForge (Iterate Mode, HTML)",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/main.go",
+      "args": [
+        "-d",
+        "${workspaceFolder}/examples/example.yaml",
+        "-t",
+        "${workspaceFolder}/examples/template.html",
+        "-f",
+        "html",
+        "-o",
+        "${workspaceFolder}/output",
+        "--iterate",
+        "-v"
+      ],
+      "env": {},
+      "showLog": true
+    },
+    {
+      "name": "Debug CVForge (Iterate Mode, PDF)",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/main.go",
+      "args": [
+        "-d",
+        "${workspaceFolder}/examples/example.yaml",
+        "-t",
+        "${workspaceFolder}/examples/template.html",
+        "-f",
+        "pdf",
+        "-o",
+        "${workspaceFolder}/output",
+        "--iterate",
+        "-v"
+      ],
+      "env": {},
+      "showLog": true
+    },
+
+    {
       "name": "Debug with Custom Files",
       "type": "go",
       "request": "launch",
