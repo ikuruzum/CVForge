@@ -43,7 +43,7 @@ public class CVForgeValue
     }
 
 
-    public bool Explicit { get; set; }
+    public bool Exclusive { get; set; }
 
 
     public dynamic? Value { get; set; }
@@ -188,7 +188,7 @@ public class CVForgeValue
                data.Count == 0 &&
                (ListValue == null || ListValue.Count == 0) &&
                string.IsNullOrEmpty(URL) &&
-               !Explicit &&
+               !Exclusive &&
                (Tags == null || Tags.Count == 0);
     }
     public CVForgeValue FilterTags(List<string> tags)
@@ -204,10 +204,10 @@ public class CVForgeValue
         {
             Tags = new List<string>(this.Tags),  // Make a copy of the tags
             URL = this.URL,                      // Copy other properties as needed
-            Explicit = this.Explicit
+            Exclusive = this.Exclusive
         };
         // If this is an explicit item, it should only be included if explicitly requested
-        if (Explicit)
+        if (Exclusive)
         {
             // If no included tags are specified, exclude this item
             if (includedTags.Count == 0)
@@ -241,7 +241,7 @@ public class CVForgeValue
                     Value = filteredNested.Value,
                     Tags = new List<string>(filteredNested.Tags),  
                     URL = filteredNested.URL,                      
-                    Explicit = filteredNested.Explicit
+                    Exclusive = filteredNested.Exclusive
                 };
                 // Copy the data dictionary
                 foreach (var kvp in filteredNested.data)
@@ -269,7 +269,7 @@ public class CVForgeValue
                         Value = filteredItem.Value,
                         Tags = new List<string>(filteredItem.Tags),  // Copy tags
                         URL = filteredItem.URL,                      // Copy other properties
-                        Explicit = filteredItem.Explicit
+                        Exclusive = filteredItem.Exclusive
                     };
                     // Copy the data dictionary
                     foreach (var kvp in filteredItem.data)
@@ -302,7 +302,7 @@ public class CVForgeValue
                 Value = this.Value,
                 Tags = this.Tags != null ? new List<string>(this.Tags) : null,
                 URL = this.URL,
-                Explicit = this.Explicit
+                Exclusive = this.Exclusive
             };
         }
 
@@ -331,7 +331,7 @@ public class CVForgeValue
             dict["url"] = URL;
         }
 
-        if (Explicit)
+        if (Exclusive)
         {
             dict["explicit"] = true;
         }
@@ -384,7 +384,7 @@ public class CVForgeValue
 
         if (dict.TryGetValue("explicit", out var explicitObj))
         {
-            Explicit = explicitObj as bool? ?? false;
+            Exclusive = explicitObj as bool? ?? false;
         }
 
         // Process all key-value pairs in the dictionary
