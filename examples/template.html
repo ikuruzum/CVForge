@@ -17,11 +17,23 @@
         --body-size: 13px;
         --muted-size: 12px;
         --gap: 14px;
-        --link-color: #2b2b2b; 
+        --link-color: #24047a;
       }
+      .experience-item,
+      .project-item,
+      .education-item,
+      .responsibilities li,
+      .project-details li {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      * {
+        page-break-inside: auto !important;
+        break-inside: auto !important;
+      }
+
       html,
       body {
-        height: 100%;
         background: var(--page-bg);
         margin: 0;
         font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
@@ -36,7 +48,6 @@
         border-radius: 6px;
       }
 
-      
       .header {
         display: flex;
         flex-direction: column;
@@ -69,7 +80,7 @@
         justify-content: center;
         align-items: center;
       }
-      
+
       .contact a {
         color: var(--link-color);
         text-decoration: none;
@@ -81,31 +92,33 @@
         border-bottom-color: var(--accent);
       }
       .summary {
-        margin-top: 12px;
-        font-size: var(--body-size);
-        line-height: 1.42; 
+        margin-top: 10px;
+        font-size: 12px;
+        line-height: 1.38;
         color: #222;
         max-width: 740px;
         margin-left: auto;
         margin-right: auto;
       }
 
-      
       .main {
         display: grid;
         grid-template-columns: 1fr;
         gap: 18px;
+        page-break-inside: auto;
+        break-inside: auto;
       }
       .section {
         padding: 4px 0;
-        page-break-inside: avoid; 
+        page-break-inside: auto;
+        break-inside: auto;
       }
       .section-title {
         display: flex;
         align-items: center;
         justify-content: space-between;
         margin-bottom: 8px;
-        page-break-after: avoid; 
+        page-break-after: avoid;
       }
       .section-title h2 {
         font-size: 12px;
@@ -117,13 +130,12 @@
         border-bottom: 1px solid #f2f2f2;
       }
 
-      
       .experience-item,
       .project-item {
-        margin-bottom: 8px; 
-        padding-bottom: 6px; 
+        margin-bottom: 8px;
+        padding-bottom: 6px;
         border-bottom: 1px dashed #f6f6f6;
-        page-break-inside: avoid; 
+        page-break-inside: avoid;
         break-inside: avoid;
       }
       .job-row,
@@ -133,6 +145,8 @@
         justify-content: space-between;
         align-items: flex-start;
         gap: 8px;
+        break-inside: avoid;
+        page-break-inside: avoid;
       }
       .position,
       .project-title {
@@ -144,38 +158,36 @@
       .project-role {
         font-style: italic;
         color: var(--muted);
-        font-size: 12.5px; 
+        font-size: 12.5px;
       }
       .dates {
-        font-size: 11.5px; 
+        font-size: 11.5px;
         color: var(--muted);
         min-width: 90px;
         text-align: right;
-        white-space: nowrap; 
+        white-space: nowrap;
       }
       .description {
-        margin: 5px 0 4px 0; 
-        font-size: 12.5px; 
+        margin: 5px 0 4px 0;
+        font-size: 12.5px;
         color: #333;
-        line-height: 1.4; 
+        line-height: 1.4;
       }
 
-      
       .responsibilities,
       .project-details {
-        margin: 4px 0 6px 0; 
+        margin: 4px 0 6px 0;
         padding-left: 16px;
       }
       .responsibilities li,
       .project-details li {
-        margin-bottom: 3px; 
-        font-size: 12.5px; 
+        margin-bottom: 3px;
+        font-size: 12.5px;
         color: #333;
-        line-height: 1.38; 
-        page-break-inside: avoid; 
+        line-height: 1.38;
+        page-break-inside: avoid;
       }
 
-      
       .tags {
         display: flex;
         flex-wrap: wrap;
@@ -190,10 +202,9 @@
         color: #333;
       }
 
-      
       .education-item {
         margin-bottom: 8px;
-        page-break-inside: avoid; 
+        page-break-inside: avoid;
       }
       .degree {
         font-weight: 600;
@@ -204,7 +215,6 @@
         font-size: 13px;
       }
 
-      
       .skills,
       .tech-skills {
         display: flex;
@@ -224,7 +234,7 @@
       .skill-block {
         flex: 1 1 140px;
         min-width: 120px;
-        page-break-inside: avoid; 
+        page-break-inside: avoid;
       }
       .skill-block .small-muted {
         padding-top: 6px;
@@ -238,18 +248,17 @@
         gap: 6px;
       }
       .skill-list .tag {
-        padding: 5px 8px; 
+        padding: 5px 8px;
         border-radius: 8px;
-        font-size: 11.5px; 
+        font-size: 11.5px;
       }
 
-      
       #languages ul {
         padding-left: 16px;
         margin: 6px 0;
       }
       #languages li {
-        margin-bottom: 4px; 
+        margin-bottom: 4px;
         page-break-inside: avoid;
       }
       #languages strong {
@@ -262,7 +271,6 @@
         color: var(--muted);
       }
 
-      
       .contact-value {
         word-break: break-all;
         font-size: 12px;
@@ -275,153 +283,94 @@
         text-align: center;
       }
 
-      
       @page {
         size: A4 portrait;
-        margin: 10mm; 
+        margin: 10mm;
       }
 
       @media print {
-        
+        html,
+        body {
+          height: auto !important;
+        }
+        body {
+          margin: 0 !important;
+        }
+        .container {
+          padding: 0 !important;
+          margin: 0 auto !important;
+          page-break-after: avoid;
+        }
+        * {
+          --link-color: #2b2b2b !important;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
         a {
           color: var(--link-color) !important;
-          text-decoration: none;
         }
-        
-        .contact a {
-          border-bottom: 1px solid #999;
+        body {
+          margin: 0;
+          padding: 0;
+          background: white !important;
         }
 
-        
+        .container {
+          max-width: 100%;
+          padding: 0;
+        }
+
         .main {
           display: grid !important;
-          grid-template-columns: 2fr 1fr !important;
+          grid-template-columns: 1fr 0.35fr !important;
           gap: 16px !important;
+          grid-auto-rows: min-content !important;
+          align-items: start !important;
         }
 
-        
-        .container {
-          max-width: none !important;
-          width: 100% !important;
-          margin: 0 !important;
-          padding: 10mm !important;
-          box-shadow: none !important;
-          border-radius: 0 !important;
-        }
-
-        
-        .left-col {
-          padding-right: 10px !important;
-          border-right: 1px solid #f5f5f5;
-        }
+        .left-col,
         .right-col {
-          padding-left: 10px !important;
+          break-inside: auto !important;
+          page-break-inside: auto !important;
+          min-height: 0 !important;
         }
 
-        
-        .dates {
-          min-width: 110px !important;
-          text-align: right;
-          font-size: 11px !important;
-        }
-
-        
+        section,
         .experience-item,
-        .project-item,
         .education-item,
-        .skill-block,
-        .section {
-          break-inside: avoid-page !important;
-          page-break-inside: avoid !important;
-          -webkit-column-break-inside: avoid !important;
-        }
-
-        
-        .section-title,
-        .section-title h2 {
-          break-after: avoid-page !important;
-          page-break-after: avoid !important;
-        }
-
-        
-        .responsibilities li,
-        .project-details li {
-          orphans: 2;
-          widows: 2;
-          break-inside: avoid;
-          page-break-inside: avoid;
-        }
-
-        
-        .experience-item,
         .project-item {
-          margin-bottom: 6px !important;
-          padding-bottom: 5px !important;
+          break-inside: auto !important;
+          page-break-inside: auto !important;
         }
 
-        .responsibilities,
-        .project-details {
-          margin: 3px 0 5px 0 !important;
+        h1,
+        h2,
+        h3,
+        h4 {
+          break-after: avoid !important;
         }
 
-        .responsibilities li,
-        .project-details li {
-          margin-bottom: 2px !important;
-          line-height: 1.35 !important;
-          font-size: 12px !important;
+        ul,
+        li {
+          break-inside: auto !important;
         }
 
-        .description {
-          margin: 4px 0 3px 0 !important;
-          font-size: 12px !important;
-          line-height: 1.38 !important;
-        }
-
-        
-        .header {
-          padding-bottom: 10px !important;
-          margin-bottom: 12px !important;
-        }
-
-        .summary {
-          margin-top: 10px !important;
-          line-height: 1.4 !important;
-        }
-
-        
-        .section-title h2 {
-          border-bottom: 1px solid #e5e5e5;
-          padding-bottom: 4px;
-        }
-
-        
-        body {
-          font-size: 12px !important;
-        }
-
-        .position,
-        .project-title {
-          font-size: 13.5px !important;
-        }
-
-        .employer,
-        .project-role {
-          font-size: 12px !important;
+        @page {
+          margin: 12mm;
         }
       }
 
-      
       @media (min-width: 980px) {
         .main {
-          grid-template-columns: 2fr 1fr;
+          grid-template-columns: 3.4fr 1fr;
           gap: 22px;
         }
         .left-col {
-          padding-right: 14px;
+          padding-right: 8px;
           border-right: 1px solid #f5f5f5;
         }
         .right-col {
-          padding-left: 14px;
+          padding-left: 6px;
         }
         .dates {
           min-width: 120px;
