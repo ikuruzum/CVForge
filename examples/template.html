@@ -17,6 +17,7 @@
         --body-size: 13px;
         --muted-size: 12px;
         --gap: 14px;
+        --link-color: #2b2b2b; 
       }
       html,
       body {
@@ -35,7 +36,7 @@
         border-radius: 6px;
       }
 
-      /* HEADER */
+      
       .header {
         display: flex;
         flex-direction: column;
@@ -68,23 +69,28 @@
         justify-content: center;
         align-items: center;
       }
+      
       .contact a {
-        color: inherit;
+        color: var(--link-color);
         text-decoration: none;
-        border-bottom: 1px dashed #e6e6e6;
+        border-bottom: 1px solid #ccc;
         padding-bottom: 1px;
+        transition: border-color 0.2s;
+      }
+      .contact a:hover {
+        border-bottom-color: var(--accent);
       }
       .summary {
         margin-top: 12px;
         font-size: var(--body-size);
-        line-height: 1.45;
+        line-height: 1.42; 
         color: #222;
         max-width: 740px;
         margin-left: auto;
         margin-right: auto;
       }
 
-      /* LAYOUT */
+      
       .main {
         display: grid;
         grid-template-columns: 1fr;
@@ -92,12 +98,14 @@
       }
       .section {
         padding: 4px 0;
+        page-break-inside: avoid; 
       }
       .section-title {
         display: flex;
         align-items: center;
         justify-content: space-between;
         margin-bottom: 8px;
+        page-break-after: avoid; 
       }
       .section-title h2 {
         font-size: 12px;
@@ -109,12 +117,14 @@
         border-bottom: 1px solid #f2f2f2;
       }
 
-      /* ITEMS */
+      
       .experience-item,
       .project-item {
-        margin-bottom: 10px;
-        padding-bottom: 8px;
+        margin-bottom: 8px; 
+        padding-bottom: 6px; 
         border-bottom: 1px dashed #f6f6f6;
+        page-break-inside: avoid; 
+        break-inside: avoid;
       }
       .job-row,
       .project-row {
@@ -134,35 +144,38 @@
       .project-role {
         font-style: italic;
         color: var(--muted);
-        font-size: 13px;
+        font-size: 12.5px; 
       }
       .dates {
-        font-size: 12px;
+        font-size: 11.5px; 
         color: var(--muted);
         min-width: 90px;
         text-align: right;
+        white-space: nowrap; 
       }
       .description {
-        margin: 6px 0 6px 0;
-        font-size: 13px;
+        margin: 5px 0 4px 0; 
+        font-size: 12.5px; 
         color: #333;
+        line-height: 1.4; 
       }
 
-      /* RESPONSIBILITIES */
+      
       .responsibilities,
       .project-details {
-        margin: 6px 0 8px 0;
+        margin: 4px 0 6px 0; 
         padding-left: 16px;
       }
       .responsibilities li,
       .project-details li {
-        margin-bottom: 6px;
-        font-size: 13px;
+        margin-bottom: 3px; 
+        font-size: 12.5px; 
         color: #333;
-        line-height: 1.4;
+        line-height: 1.38; 
+        page-break-inside: avoid; 
       }
 
-      /* TAGS */
+      
       .tags {
         display: flex;
         flex-wrap: wrap;
@@ -177,9 +190,10 @@
         color: #333;
       }
 
-      /* EDUCATION */
+      
       .education-item {
         margin-bottom: 8px;
+        page-break-inside: avoid; 
       }
       .degree {
         font-weight: 600;
@@ -190,7 +204,7 @@
         font-size: 13px;
       }
 
-      /* SKILLS */
+      
       .skills,
       .tech-skills {
         display: flex;
@@ -210,6 +224,7 @@
       .skill-block {
         flex: 1 1 140px;
         min-width: 120px;
+        page-break-inside: avoid; 
       }
       .skill-block .small-muted {
         padding-top: 6px;
@@ -223,18 +238,19 @@
         gap: 6px;
       }
       .skill-list .tag {
-        padding: 6px 8px;
+        padding: 5px 8px; 
         border-radius: 8px;
-        font-size: 12px;
+        font-size: 11.5px; 
       }
 
-      /* LANGUAGES */
+      
       #languages ul {
         padding-left: 16px;
         margin: 6px 0;
       }
       #languages li {
-        margin-bottom: 6px;
+        margin-bottom: 4px; 
+        page-break-inside: avoid;
       }
       #languages strong {
         font-size: 11px;
@@ -246,7 +262,7 @@
         color: var(--muted);
       }
 
-      /* CONTACT BRIEF */
+      
       .contact-value {
         word-break: break-all;
         font-size: 12px;
@@ -258,71 +274,143 @@
         font-size: 12px;
         text-align: center;
       }
-      /* PRINT / PDF düzeltmeleri: ekle bunları style sonuna */
+
+      
       @page {
         size: A4 portrait;
-        margin: 12mm;
+        margin: 10mm; 
       }
-      /* Eğer portrait sığmıyorsa, PDF alırken landscape için:
-   @page { size: A4 landscape; margin: 12mm; }
-*/
 
       @media print {
-        /* zorla iki sütun düzeni */
+        
+        a {
+          color: var(--link-color) !important;
+          text-decoration: none;
+        }
+        
+        .contact a {
+          border-bottom: 1px solid #999;
+        }
+
+        
         .main {
           display: grid !important;
           grid-template-columns: 2fr 1fr !important;
-          gap: 18px !important;
+          gap: 16px !important;
         }
 
-        /* container PDF'te tam genişlik kullansın, ortalamayı kaldır */
+        
         .container {
           max-width: none !important;
           width: 100% !important;
           margin: 0 !important;
-          padding: 12mm !important;
+          padding: 10mm !important;
           box-shadow: none !important;
           border-radius: 0 !important;
         }
 
-        /* sağ/sol kolon paddingle hizalanır */
+        
         .left-col {
-          padding-right: 12px !important;
+          padding-right: 10px !important;
           border-right: 1px solid #f5f5f5;
         }
         .right-col {
-          padding-left: 12px !important;
+          padding-left: 10px !important;
         }
 
-        /* tarihlerin ve küçük öğelerin hizası bozulmasın */
+        
         .dates {
           min-width: 110px !important;
           text-align: right;
+          font-size: 11px !important;
         }
 
-        /* sayfa içine hoş olmayan bölünmeleri engelle */
+        
         .experience-item,
         .project-item,
         .education-item,
-        .skill-block {
-          break-inside: avoid-page;
-          page-break-inside: avoid;
-          -webkit-column-break-inside: avoid;
+        .skill-block,
+        .section {
+          break-inside: avoid-page !important;
+          page-break-inside: avoid !important;
+          -webkit-column-break-inside: avoid !important;
         }
 
-        /* başlık altındaki çizgiler PDF'te ince görünebilir, istersen kaldır */
+        
+        .section-title,
         .section-title h2 {
-          border-bottom: none;
+          break-after: avoid-page !important;
+          page-break-after: avoid !important;
+        }
+
+        
+        .responsibilities li,
+        .project-details li {
+          orphans: 2;
+          widows: 2;
+          break-inside: avoid;
+          page-break-inside: avoid;
+        }
+
+        
+        .experience-item,
+        .project-item {
+          margin-bottom: 6px !important;
+          padding-bottom: 5px !important;
+        }
+
+        .responsibilities,
+        .project-details {
+          margin: 3px 0 5px 0 !important;
+        }
+
+        .responsibilities li,
+        .project-details li {
+          margin-bottom: 2px !important;
+          line-height: 1.35 !important;
+          font-size: 12px !important;
+        }
+
+        .description {
+          margin: 4px 0 3px 0 !important;
+          font-size: 12px !important;
+          line-height: 1.38 !important;
+        }
+
+        
+        .header {
+          padding-bottom: 10px !important;
+          margin-bottom: 12px !important;
+        }
+
+        .summary {
+          margin-top: 10px !important;
+          line-height: 1.4 !important;
+        }
+
+        
+        .section-title h2 {
+          border-bottom: 1px solid #e5e5e5;
           padding-bottom: 4px;
         }
 
-        /* küçük tip ayarı (gerekiyorsa daha kompakt olacak şekilde küçült) */
+        
         body {
-          font-size: 12px;
+          font-size: 12px !important;
+        }
+
+        .position,
+        .project-title {
+          font-size: 13.5px !important;
+        }
+
+        .employer,
+        .project-role {
+          font-size: 12px !important;
         }
       }
 
-      /* RESPONSIVENESS */
+      
       @media (min-width: 980px) {
         .main {
           grid-template-columns: 2fr 1fr;
@@ -490,7 +578,6 @@
           </section>
         </aside>
       </main>
-
     </div>
   </body>
 </html>
