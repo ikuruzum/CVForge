@@ -83,9 +83,8 @@
       "env": {},
       "showLog": true
     },
-
     {
-      "name": "Debug with Custom Files",
+      "name": "Debug CVForge with Custom Files",
       "type": "go",
       "request": "launch",
       "mode": "auto",
@@ -99,6 +98,109 @@
       ],
       "env": {},
       "showLog": true
+    },
+    {
+      "name": "Debug Private CVForge (HTML)",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/main.go",
+      "args": [
+        "-d",
+        "${workspaceFolder}/Private-CV/example.yaml",
+        "-t",
+        "${workspaceFolder}/Private-CV/template.html",
+        "-f",
+        "html",
+        "-o",
+        "${workspaceFolder}/output.html"
+      ],
+      "env": {},
+      "showLog": true,
+      "presentation": { "hidden": true }
+    },
+
+    {
+      "name": "Debug Private CVForge (PDF)",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/main.go",
+      "args": [
+        "-d",
+        "${workspaceFolder}/Private-CV/example.yaml",
+        "-t",
+        "${workspaceFolder}/Private-CV/template.html",
+        "-f",
+        "pdf",
+        "-o",
+        "${workspaceFolder}/output.pdf"
+      ],
+      "env": {},
+      "showLog": true,
+      "presentation": { "hidden": true }
+    },
+
+    {
+      "name": "Debug Private CVForge (Iterate Mode, HTML)",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/main.go",
+      "args": [
+        "-d",
+        "${workspaceFolder}/Private-CV/example.yaml",
+        "-t",
+        "${workspaceFolder}/Private-CV/template.html",
+        "-f",
+        "html",
+        "-o",
+        "${workspaceFolder}/output",
+        "--iterate",
+        "-v"
+      ],
+      "env": {},
+      "showLog": true,
+      "presentation": { "hidden": true }
+    },
+    {
+      "name": "Debug Private CVForge (Iterate Mode, PDF)",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/main.go",
+      "args": [
+        "-d",
+        "${workspaceFolder}/Private-CV/example.yaml",
+        "-t",
+        "${workspaceFolder}/Private-CV/template.html",
+        "-f",
+        "pdf",
+        "-o",
+        "${workspaceFolder}/output",
+        "--iterate",
+        "-v"
+      ],
+      "env": {},
+      "showLog": true,
+      "presentation": { "hidden": true }
+    },
+    {
+      "name": "Debug Private with Custom Files",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/main.go",
+      "args": [
+        "${input:dataFile}",
+        "${input:templateFile}",
+        "${input:outputFile}",
+        "-f",
+        "${input:format}"
+      ],
+      "env": {},
+      "showLog": true,
+      "presentation": { "hidden": true }
     }
   ],
   "inputs": [
