@@ -51,7 +51,7 @@ func GeneratePDF(htmlContent string) ([]byte, error) {
 				WithMarginLeft(0.39).          
 				WithMarginRight(0.39).         
 				WithDisplayHeaderFooter(false). 
-				WithPreferCSSPageSize(false).   
+				WithPreferCSSPageSize(true).   
 				Do(ctx)
 			return err
 		}),
